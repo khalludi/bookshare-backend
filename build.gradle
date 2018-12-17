@@ -18,6 +18,10 @@ plugins {
 	id "org.sonarqube" version "2.6"
 }
 
+plugins {
+	id 'jacoco'
+}
+
 flyway {
     url= "jdbc:postgresql://localhost:26257/testdb"
     user= "user17"

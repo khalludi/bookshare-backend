@@ -84,4 +84,15 @@ public class ListingEntityServiceIntegrationTest {
 
         Mockito.verify(EmployeeServiceImplTestContextConfiguration.listingRepository, Mockito.times(1)).deleteById(9182381L);
     }
+
+    @Test
+    public void whenAddListingByEntity_thenListingShouldBeReturned() {
+        ListingEntity listingEntity4 = new ListingEntity(1234560, 3, 14.99,
+                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+
+        Mockito.when(EmployeeServiceImplTestContextConfiguration.listingRepository.save(listingEntity4))
+                .thenReturn(listingEntity4);
+
+        listingService.addListing(listingEntity4);
+    }
 }
