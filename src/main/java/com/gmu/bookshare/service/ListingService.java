@@ -14,7 +14,7 @@ public class ListingService {
     private final ListingRepository listingRepository;
 
     @Autowired
-    public ListingService(ListingRepository listingRepository) {
+    ListingService(ListingRepository listingRepository) {
         this.listingRepository = listingRepository;
     }
 
@@ -32,7 +32,11 @@ public class ListingService {
                 .orElseThrow(() -> new ListingNotFoundException(id));
     }
 
-    public ListingEntity getIsbn(int isbn) {
+    ListingEntity getIsbn(int isbn) {
         return listingRepository.findByIsbn(isbn).get(0);
+    }
+
+    public void updateListing(ListingEntity listingEntity) {
+        listingRepository.save(listingEntity);
     }
 }

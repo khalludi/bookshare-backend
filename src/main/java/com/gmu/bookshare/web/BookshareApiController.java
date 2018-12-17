@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,7 @@ public class BookshareApiController {
 
     @PostMapping(value = "/listing/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ListingDto newListing(@RequestBody ListingDto listingDto) throws ParseException {
+    public ListingDto newListing(@RequestBody ListingDto listingDto) {
         ListingEntity post = convertToEntity(listingDto);
         ListingEntity postCreated = listingService.addListing(post);
         return convertToDto(postCreated);
@@ -54,15 +53,21 @@ public class BookshareApiController {
         return convertToDto(listingService.getById(id));
     }
 
+    @PutMapping(value = "/listing/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    void updateListing(@RequestBody ListingDto listingDto) {
+        ListingEntity listingEntity = convertToEntity(listingDto);
+        listingService.updateListing(listingEntity);
+    }
+
     private ListingDto convertToDto(ListingEntity listingEntity) {
         ListingDto listingDto = modelMapper.map(listingEntity, ListingDto.class);
         listingDto.setCreateDate(listingEntity.getCreateDate());
         return listingDto;
     }
 
-    private ListingEntity convertToEntity(ListingDto listingDto) throws ParseException {
-        ListingEntity post = modelMapper.map(listingDto, ListingEntity.class);
-//        post.setCreateDate(ListingDto.getCreateDateConverted(
+    private ListingEntity convertToEntity(ListingDto listingDto) {
+        //        post.setCreateDate(ListingDto.getCreateDateConverted(
 //                userService.getCurrentUser().getPreference().getTimezone()));
 //
 //        if (ListingDto.getId() != null) {
@@ -70,6 +75,6 @@ public class BookshareApiController {
 //            post.setRedditID(oldPost.getRedditID());
 //            post.setSent(oldPost.isSent());
 //        }
-        return post;
+        return modelMapper.map(listingDto, ListingEntity.class);
     }
 }
