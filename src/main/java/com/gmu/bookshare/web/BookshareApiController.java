@@ -61,6 +61,11 @@ public class BookshareApiController {
         listingService.updateListing(listingEntity);
     }
 
+    @DeleteMapping(value = "/listing/{id}")
+    void deleteListing(@PathVariable Long id) {
+        listingService.deleteListing(id);
+    }
+
     private ListingDto convertToDto(ListingEntity listingEntity) {
         ListingDto listingDto = modelMapper.map(listingEntity, ListingDto.class);
         listingDto.setCreateDate(listingEntity.getCreateDate());

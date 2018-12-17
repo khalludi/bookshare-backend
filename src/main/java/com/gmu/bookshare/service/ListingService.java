@@ -39,4 +39,8 @@ public class ListingService {
     public void updateListing(ListingEntity listingEntity) {
         listingRepository.save(listingEntity);
     }
+
+    public void deleteListing(Long id) {
+        listingRepository.deleteById(id);
+    }
 }
