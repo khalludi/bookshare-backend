@@ -77,4 +77,11 @@ public class ListingEntityServiceIntegrationTest {
 
         assertThat(listings.size()).isEqualTo(3);
     }
+
+    @Test
+    public void whenDeleteByValidId_thenListingShouldBeRemoved() {
+        listingService.deleteListing(9182381L);
+
+        Mockito.verify(EmployeeServiceImplTestContextConfiguration.listingRepository, Mockito.times(1)).deleteById(9182381L);
+    }
 }
