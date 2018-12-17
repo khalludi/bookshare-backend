@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,7 @@ public class BookshareApiController {
 
     @PostMapping(value = "/listing/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ListingDto newListing(@RequestBody ListingDto listingDto) {
+    public ListingDto newListing(@RequestBody ListingDto listingDto) throws ParseException {
         ListingEntity post = convertToEntity(listingDto);
         ListingEntity postCreated = listingService.addListing(post);
         return convertToDto(postCreated);
@@ -55,7 +56,7 @@ public class BookshareApiController {
 
     @PutMapping(value = "/listing/{id}")
     @ResponseStatus(HttpStatus.OK)
-    void updateListing(@RequestBody ListingDto listingDto) {
+    void updateListing(@RequestBody ListingDto listingDto) throws ParseException {
         ListingEntity listingEntity = convertToEntity(listingDto);
         listingService.updateListing(listingEntity);
     }
@@ -66,15 +67,9 @@ public class BookshareApiController {
         return listingDto;
     }
 
-    private ListingEntity convertToEntity(ListingDto listingDto) {
-        //        post.setCreateDate(ListingDto.getCreateDateConverted(
-//                userService.getCurrentUser().getPreference().getTimezone()));
-//
-//        if (ListingDto.getId() != null) {
-//            ListingEntity oldPost = listingService.getPostById(postDto.getId());
-//            post.setRedditID(oldPost.getRedditID());
-//            post.setSent(oldPost.isSent());
-//        }
-        return modelMapper.map(listingDto, ListingEntity.class);
+    private ListingEntity convertToEntity(ListingDto listingDto) throws ParseException {
+        ListingEntity post = modelMapper.map(listingDto, ListingEntity.class);
+        post.setCreateDate(ListingDto.getCreateDateConverted());
+        return post;
     }
 }
