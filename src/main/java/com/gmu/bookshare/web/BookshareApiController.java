@@ -50,8 +50,8 @@ public class BookshareApiController {
     }
 
     @GetMapping(value = "/listing/{id}")
-    ListingEntity getOne(@PathVariable Long id) {
-        return listingService.getById(id);
+    ListingDto getOne(@PathVariable Long id) {
+        return convertToDto(listingService.getById(id));
     }
 
     private ListingDto convertToDto(ListingEntity listingEntity) {
