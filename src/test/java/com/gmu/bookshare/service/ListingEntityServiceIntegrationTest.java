@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,21 +42,39 @@ public class ListingEntityServiceIntegrationTest {
 
     @Before
     public void setUp() {
-        ListingEntity listingEntity1 = new ListingEntity(123456, 3, 14.99,
+        ListingEntity listingEntity1 = new ListingEntity(1234567, 3, 14.99,
+                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+        ListingEntity listingEntity2 = new ListingEntity(1234568, 3, 14.99,
+                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+        ListingEntity listingEntity3 = new ListingEntity(1234569, 3, 14.99,
                 new Date(), 192838079872L, 2879878394L, "Title Calc 3");
 
         ArrayList<ListingEntity> l = new ArrayList<>();
         l.add(listingEntity1);
 
+        ArrayList<ListingEntity> allListings = new ArrayList<>();
+        allListings.add(listingEntity1);
+        allListings.add(listingEntity2);
+        allListings.add(listingEntity3);
+
         Mockito.when(EmployeeServiceImplTestContextConfiguration.listingRepository.findByIsbn(listingEntity1.getIsbn()))
                 .thenReturn(l);
+
+        Mockito.when(EmployeeServiceImplTestContextConfiguration.listingRepository.findAll()).thenReturn(allListings);
     }
 
     @Test
     public void whenValidIsbn_thenListingShouldBeFound() {
-        int isbn = 123456;
+        int isbn = 1234567;
         ListingEntity found = listingService.getIsbn(isbn);
 
         assertThat(found.getIsbn()).isEqualTo(isbn);
+    }
+
+    @Test
+    public void whenGetAll_thenAllListingsShouldBeFound() {
+        List<ListingEntity> listings = listingService.getAll();
+
+        assertThat(listings.size()).isEqualTo(3);
     }
 }
