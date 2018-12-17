@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -54,11 +55,15 @@ public class BookshareApiController {
         return convertToDto(listingService.getById(id));
     }
 
-    @PutMapping(value = "/listing/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    void updateListing(@RequestBody ListingDto listingDto) throws ParseException {
+    @PutMapping(value = "/listing/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<ListingDto> updateListing(@RequestBody ListingDto listingDto) throws ParseException {
         ListingEntity listingEntity = convertToEntity(listingDto);
-        listingService.updateListing(listingEntity);
+        ListingEntity ret = listingService.updateListing(listingEntity);
+        if (ret == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(convertToDto(ret), HttpStatus.OK);
+        }
     }
 
     @DeleteMapping(value = "/listing/{id}")

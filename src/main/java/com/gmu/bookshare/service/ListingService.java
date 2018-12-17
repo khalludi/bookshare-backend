@@ -36,8 +36,12 @@ public class ListingService {
         return listingRepository.findByIsbn(isbn).get(0);
     }
 
-    public void updateListing(ListingEntity listingEntity) {
-        listingRepository.save(listingEntity);
+    public ListingEntity updateListing(ListingEntity listingEntity) {
+        if (listingRepository.findById(listingEntity.getId()).isPresent())
+            listingRepository.save(listingEntity);
+        else
+            return null;
+        return listingEntity;
     }
 
     public void deleteListing(Long id) {
