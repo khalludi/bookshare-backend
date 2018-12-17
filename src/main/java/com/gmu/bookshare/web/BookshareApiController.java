@@ -69,7 +69,7 @@ public class BookshareApiController {
 
     private ListingEntity convertToEntity(ListingDto listingDto) throws ParseException {
         ListingEntity post = modelMapper.map(listingDto, ListingEntity.class);
-        post.setCreateDate(ListingDto.getCreateDateConverted());
+        post.setCreateDate(listingDto.getCreateDateConverted());
         return post;
     }
 }

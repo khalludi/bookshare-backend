@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 public class ListingDto {
 
-    private static final SimpleDateFormat dateFormat
+    private final SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     private Long id;
