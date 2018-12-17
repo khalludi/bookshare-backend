@@ -68,4 +68,18 @@ public class ListingEntityRepositoryIntegrationTest {
         assertThat(found1.isPresent()).isTrue();
         assertThat(found1.get().getId()).isEqualTo(book1.getId());
     }
+
+    @Test
+    public void whenFindByInvalidId_thenReturnEmpty() {
+        //given
+        ListingEntity book1 = new ListingEntity(123456, 3, 14.99,
+                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+        testEntityManager.persistAndFlush(book1);
+
+        // when
+        Optional<ListingEntity> error = listingRepository.findById(82341792L);
+
+        // then
+        assertThat(error.isPresent()).isFalse();
+    }
 }
