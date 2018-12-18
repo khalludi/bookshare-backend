@@ -73,7 +73,7 @@ public class BookshareApiController {
 
     private ListingDto convertToDto(ListingEntity listingEntity) {
         ListingDto listingDto = modelMapper.map(listingEntity, ListingDto.class);
-        listingDto.setCreateDate(listingEntity.getCreateDate());
+        listingDto.setCreateDateConverted(listingEntity.getCreateDate());
         return listingDto;
     }
 

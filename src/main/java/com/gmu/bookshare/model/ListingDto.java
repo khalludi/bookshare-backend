@@ -40,7 +40,7 @@ public class ListingDto {
         return dateFormat.parse(this.createDate);
     }
 
-    public void setCreateDate(Date date) {
+    public void setCreateDateConverted(Date date) {
         this.createDate = dateFormat.format(date);
     }
 }
