@@ -1,0 +1,12 @@
+spring.jpa:
+  hibernate.ddl-auto: update
+  properties.hibernate.dialect: org.hibernate.dialect.PostgreSQL94Dialect
+  show-sql: true
+
+spring.datasource:
+  url: jdbc:postgresql://localhost:26257/testdb?sslmode=disable
+  username: user17
+  password:
+
+server:
+  port: 9009

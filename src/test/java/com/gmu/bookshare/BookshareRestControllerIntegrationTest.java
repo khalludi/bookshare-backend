@@ -1,13 +1,11 @@
 package com.gmu.bookshare;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.gmu.bookshare.entity.ListingEntity;
 import com.gmu.bookshare.model.ListingDto;
 import com.gmu.bookshare.service.BidService;
 import com.gmu.bookshare.service.ListingService;
 import com.gmu.bookshare.service.ShareUserService;
+import com.gmu.bookshare.utils.JsonUtil;
 import com.gmu.bookshare.web.BookshareApiController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,12 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -57,7 +56,7 @@ public class BookshareRestControllerIntegrationTest {
         ListingEntity alex = new ListingEntity(123456, 3, 14.99,
                 new Date(), 192838079872L, 2879878394L, "Title Calc 3");
 
-        List<ListingEntity> allListingEntities = Arrays.asList(alex);
+        List<ListingEntity> allListingEntities = Collections.singletonList(alex);
 
         given(listingService.getAll()).willReturn(allListingEntities);
 
@@ -69,52 +68,46 @@ public class BookshareRestControllerIntegrationTest {
     }
 
     @Test
-    public void givenListing_whenPutListings_thenReturnCorrectHttpStatus()
+    public void givenListing_whenPutListing_thenReturnHttpOk()
             throws Exception {
 
         ListingEntity listingInDB = new ListingEntity(123456, 3, 14.99,
                 new Date(), 192838079872L, 2879878394L, "Title Calc 3");
         ListingEntity listingNotInDB = new ListingEntity(123456, 3, 14.99,
                 new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+        listingInDB.setId(123456L);
+        listingNotInDB.setId(123457L);
 
         ListingDto listingDtoInDB = modelMapper.map(listingInDB, ListingDto.class);
-        listingDtoInDB.setCreateDateConverted(listingInDB.getCreateDate());
         ListingDto listingDtoNotInDB = modelMapper.map(listingNotInDB, ListingDto.class);
-        listingDtoNotInDB.setCreateDateConverted(listingNotInDB.getCreateDate());
 
-//        ListingDto listingDtoInDB = new ListingDto();
-//        listingDtoInDB.setIsbn(123456);
-//        listingDtoInDB.setCondition(3);
-//        listingDtoInDB.setPrice(14.99);
-//        listingDtoInDB.setCreateDateConverted(new Date());
-//        listingDtoInDB.setTitle("Title Calc 3");
-//        listingDtoInDB.setId(listingInDB.getId());
-//
-//        ListingDto listingDtoNotInDB = new ListingDto();
-//        listingDtoInDB.setIsbn(123456);
-//        listingDtoInDB.setCondition(3);
-//        listingDtoInDB.setPrice(14.99);
-//        listingDtoInDB.setCreateDateConverted(new Date());
-//        listingDtoInDB.setTitle("Title Calc 3");
-//        listingDtoInDB.setId(listingNotInDB.getId());
+        given(listingService.updateListing(any(ListingEntity.class))).willReturn(listingInDB);
+//        given(listingService.updateListing(listingNotInDB)).willReturn(null);
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        String requestJson = ow.writeValueAsString(listingDtoInDB);
-        String requestJson2 = ow.writeValueAsString(listingDtoNotInDB);
-
-        given(listingService.updateListing(listingInDB)).willReturn(listingInDB);
-        given(listingService.updateListing(listingNotInDB)).willReturn(null);
-
-        mvc.perform(put("/bs/api/listing/" + listingInDB.getId())
+        mvc.perform(put("/bs/api/listing/" + listingDtoInDB.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
+                .content(JsonUtil.writeValueAsString(listingDtoInDB)))
                 .andExpect(status().isOk());
 
-        mvc.perform(put("/bs/api/listing/" + listingNotInDB.getId())
+//        mvc.perform(put("/bs/api/listing/" + listingDtoNotInDB.getId())
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(JsonUtil.writeValueAsString(listingDtoNotInDB)))
+//                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void givenListing_whenPutInvalidListing_thenReturnHttpNotFound() throws Exception {
+        ListingEntity listingNotInDB = new ListingEntity(123456, 3, 14.99,
+                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+        listingNotInDB.setId(123457L);
+
+        ListingDto listingDtoNotInDB = modelMapper.map(listingNotInDB, ListingDto.class);
+
+        given(listingService.updateListing(any(ListingEntity.class))).willReturn(null);
+
+        mvc.perform(put("/bs/api/listing/" + listingDtoNotInDB.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson2))
+                .content(JsonUtil.writeValueAsString(listingDtoNotInDB)))
                 .andExpect(status().isNotFound());
     }
 }

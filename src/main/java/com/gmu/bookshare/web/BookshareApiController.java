@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +43,7 @@ public class BookshareApiController {
 
     @PostMapping(value = "/listing/", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ListingDto newListing(@RequestBody ListingDto listingDto) throws ParseException {
+    public ListingDto newListing(@RequestBody ListingDto listingDto) {
         ListingEntity post = convertToEntity(listingDto);
         ListingEntity postCreated = listingService.addListing(post);
         return convertToDto(postCreated);
@@ -56,7 +55,7 @@ public class BookshareApiController {
     }
 
     @PutMapping(value = "/listing/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<ListingDto> updateListing(@RequestBody ListingDto listingDto) throws ParseException {
+    ResponseEntity<ListingDto> updateListing(@RequestBody ListingDto listingDto) {
         ListingEntity listingEntity = convertToEntity(listingDto);
         ListingEntity ret = listingService.updateListing(listingEntity);
         if (ret == null) {
@@ -72,14 +71,10 @@ public class BookshareApiController {
     }
 
     private ListingDto convertToDto(ListingEntity listingEntity) {
-        ListingDto listingDto = modelMapper.map(listingEntity, ListingDto.class);
-        listingDto.setCreateDateConverted(listingEntity.getCreateDate());
-        return listingDto;
+        return modelMapper.map(listingEntity, ListingDto.class);
     }
 
-    private ListingEntity convertToEntity(ListingDto listingDto) throws ParseException {
-        ListingEntity post = modelMapper.map(listingDto, ListingEntity.class);
-        post.setCreateDate(listingDto.getCreateDateConverted());
-        return post;
+    private ListingEntity convertToEntity(ListingDto listingDto) {
+        return modelMapper.map(listingDto, ListingEntity.class);
     }
 }
