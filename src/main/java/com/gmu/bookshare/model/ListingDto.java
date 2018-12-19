@@ -16,11 +16,6 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ListingDto {
 
-//    @Getter(AccessLevel.NONE)
-//    @Setter(AccessLevel.NONE)
-//    private final SimpleDateFormat dateFormat
-//            = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
     @JsonProperty("id")
     private Long id;
 
@@ -50,12 +45,4 @@ public class ListingDto {
 
     @JsonProperty("title")
     private String title;
-
-//    public Date getCreateDateConverted() throws ParseException {
-//        return dateFormat.parse(this.createDate);
-//    }
-//
-//    public void setCreateDateConverted(Date date) {
-//        this.createDate = dateFormat.format(date);
-//    }
 }

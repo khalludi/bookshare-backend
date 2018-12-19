@@ -82,17 +82,11 @@ public class BookshareRestControllerIntegrationTest {
         ListingDto listingDtoNotInDB = modelMapper.map(listingNotInDB, ListingDto.class);
 
         given(listingService.updateListing(any(ListingEntity.class))).willReturn(listingInDB);
-//        given(listingService.updateListing(listingNotInDB)).willReturn(null);
 
         mvc.perform(put("/bs/api/listing/" + listingDtoInDB.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValueAsString(listingDtoInDB)))
                 .andExpect(status().isOk());
-
-//        mvc.perform(put("/bs/api/listing/" + listingDtoNotInDB.getId())
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(JsonUtil.writeValueAsString(listingDtoNotInDB)))
-//                .andExpect(status().isNotFound());
     }
 
     @Test
