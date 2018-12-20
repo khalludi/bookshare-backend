@@ -25,8 +25,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -103,5 +102,21 @@ public class BookshareRestControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValueAsString(listingDtoNotInDB)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void givenListing_whenDeleteListing_thenReturnHttpOk() throws Exception {
+        ListingEntity listingInDB = new ListingEntity(123456, 3, 14.99,
+                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+        listingInDB.setId(1324L);
+
+        ListingDto listingDtoInDB = modelMapper.map(listingInDB, ListingDto.class);
+
+        given(listingService.getById(listingInDB.getId())).willReturn(listingInDB);
+
+        mvc.perform(delete("/bs/api/listing/" + listingInDB.getId())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(JsonUtil.writeValueAsString(listingDtoInDB)))
+                .andExpect(status().isOk());
     }
 }
