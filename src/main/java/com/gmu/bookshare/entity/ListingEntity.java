@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -48,9 +49,12 @@ public class ListingEntity {
     @Column(name = "createDate")
     private Date createDate;
 
-    @NonNull
-    @Column(name = "bid_id")
-    private Long bid_id;
+    @Column(name = "bidList")
+    @OneToMany
+    @JoinTable(name = "Listing2Bids",
+            joinColumns = {@JoinColumn(name = "Listing_FK")},
+            inverseJoinColumns = {@JoinColumn(name = "Bids_FK")})
+    private List<Bid> bidList;
 
     @NonNull
     @Column(name = "owner")

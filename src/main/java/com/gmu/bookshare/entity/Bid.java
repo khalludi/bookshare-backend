@@ -30,7 +30,4 @@ public class Bid {
 
     @Column(name = "userId")
     private Long userId;
-
-    @Column(name = "listingId")
-    private Long listingId;
 }
