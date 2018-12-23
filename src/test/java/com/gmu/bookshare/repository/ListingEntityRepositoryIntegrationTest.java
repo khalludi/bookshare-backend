@@ -1,6 +1,7 @@
 package com.gmu.bookshare.repository;
 
 import com.gmu.bookshare.entity.ListingEntity;
+import com.gmu.bookshare.entity.ShareUser;
 import com.gmu.bookshare.persistence.ListingRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,8 +31,7 @@ public class ListingEntityRepositoryIntegrationTest {
     public void whenFindByIsbn_thenReturnListing() {
         // given
         ListingEntity alex = new ListingEntity();
-        testEntityManager.persist(alex);
-        testEntityManager.flush();
+        testEntityManager.persistAndFlush(alex);
 
         // when
         ArrayList<ListingEntity> found = (ArrayList<ListingEntity>) listingRepository.findByIsbn(alex.getIsbn());
@@ -43,15 +44,23 @@ public class ListingEntityRepositoryIntegrationTest {
     @Test
     public void whenFindById_thenReturnListing() {
         //given
+        ShareUser shareUser = new ShareUser("Bobby Jones", "bobbyjones@yahoo.com",
+                new HashSet<>(), new HashSet<>());
         ListingEntity book1 = new ListingEntity(123456, 3, 14.99,
-                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+                new Date(), "Title Calc 3");
         ListingEntity book2 = new ListingEntity(123456, 3, 14.99,
-                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+                new Date(), "Title Calc 3");
         ListingEntity book3 = new ListingEntity(123456, 3, 14.99,
-                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+                new Date(), "Title Calc 3");
+
+        shareUser.addListing(book1);
+        shareUser.addListing(book2);
+        shareUser.addListing(book3);
+
         testEntityManager.persist(book1);
         testEntityManager.persist(book2);
         testEntityManager.persist(book3);
+        testEntityManager.persistAndFlush(shareUser);
 
         // when
         Optional<ListingEntity> found2 = listingRepository.findById(book2.getId());
@@ -72,9 +81,14 @@ public class ListingEntityRepositoryIntegrationTest {
     @Test
     public void whenFindByInvalidId_thenReturnEmpty() {
         //given
+        ShareUser shareUser = new ShareUser("John Doe", "jdoe@outlook.com",
+                new HashSet<>(), new HashSet<>());
         ListingEntity book1 = new ListingEntity(123456, 3, 14.99,
-                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
-        testEntityManager.persistAndFlush(book1);
+                new Date(), "Title Calc 3");
+
+        shareUser.addListing(book1);
+
+        testEntityManager.persistAndFlush(shareUser);
 
         // when
         Optional<ListingEntity> error = listingRepository.findById(82341792L);

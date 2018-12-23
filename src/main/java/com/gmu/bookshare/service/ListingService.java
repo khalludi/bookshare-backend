@@ -1,5 +1,6 @@
 package com.gmu.bookshare.service;
 
+import com.gmu.bookshare.entity.BidEntity;
 import com.gmu.bookshare.entity.ListingEntity;
 import com.gmu.bookshare.error.ListingNotFoundException;
 import com.gmu.bookshare.persistence.ListingRepository;
@@ -46,5 +47,9 @@ public class ListingService {
 
     public void deleteListing(Long id) {
         listingRepository.deleteById(id);
+    }
+
+    public void addBid(Long id, BidEntity bid) {
+        getById(id).addBid(bid);
     }
 }

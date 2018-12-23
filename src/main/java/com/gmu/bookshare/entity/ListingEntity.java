@@ -4,16 +4,15 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-@Getter
-@Setter
-@Table(name = "listing")
+@Table(name = "Listing")
 public class ListingEntity {
 
     @Id
@@ -49,18 +48,48 @@ public class ListingEntity {
     @Column(name = "createDate")
     private Date createDate;
 
-    @Column(name = "bidList")
-    @OneToMany
-    @JoinTable(name = "Listing2Bids",
-            joinColumns = {@JoinColumn(name = "Listing_FK")},
-            inverseJoinColumns = {@JoinColumn(name = "Bids_FK")})
-    private List<Bid> bidList;
-
-    @NonNull
-    @Column(name = "owner")
-    private Long owner;
-
     @NonNull
     @Column(name = "title")
     private String title;
+
+    //    @ManyToMany(fetch = FetchType.LAZY,
+//            cascade = {
+//                    CascadeType.PERSIST,
+//                    CascadeType.MERGE
+//            })
+//    @JoinTable(name = "listing2bids",
+//            joinColumns = { @JoinColumn(name = "listingId") },
+//            inverseJoinColumns = { @JoinColumn(name = "bidId") })
+    @OneToMany(
+            mappedBy = "listing",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<BidEntity> bids = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shareUserId")
+    private ShareUser shareUser;
+
+    public void addBid(BidEntity bid) {
+        bids.add(bid);
+        bid.setListing(this);
+    }
+
+    public void removeBid(BidEntity bid) {
+        bids.remove(bid);
+        bid.setListing(null);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ListingEntity)) return false;
+        return id != null && id.equals(((ListingEntity) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 41;
+    }
 }

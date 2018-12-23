@@ -48,7 +48,7 @@ dependencies {
 	implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-xml')
 	implementation('com.fasterxml.jackson.datatype:jackson-datatype-joda')
 	implementation('org.modelmapper:modelmapper:2.3.1')
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
+    compile('org.postgresql:postgresql:42.2.5')
 	compileOnly('org.projectlombok:lombok')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 	testImplementation('org.assertj:assertj-core')

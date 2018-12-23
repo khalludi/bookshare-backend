@@ -1,6 +1,8 @@
 package com.gmu.bookshare.web;
 
+import com.gmu.bookshare.entity.BidEntity;
 import com.gmu.bookshare.entity.ListingEntity;
+import com.gmu.bookshare.model.BidDto;
 import com.gmu.bookshare.model.ListingDto;
 import com.gmu.bookshare.service.BidService;
 import com.gmu.bookshare.service.ListingService;
@@ -70,11 +72,36 @@ public class BookshareApiController {
         listingService.deleteListing(id);
     }
 
+    @GetMapping(value = "/listing/{id}/bid/")
+    List<BidDto> getBidsAssociatedWithListing(@PathVariable Long id) {
+        ListingEntity listingEntity = listingService.getById(id);
+        return listingEntity.getBids().stream()
+                .map(this::convertBidToDto)
+                .collect(Collectors.toList());
+    }
+
+    @PostMapping(value = "/listing/{id}/bid/")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BidDto addBid(@PathVariable Long id, @RequestBody BidDto bidDto) {
+        BidEntity bid = convertBidToEntity(bidDto);
+        BidEntity bidCreated = bidService.addListing(bid);
+        listingService.addBid(id, bidCreated);
+        return convertBidToDto(bidCreated);
+    }
+
     private ListingDto convertToDto(ListingEntity listingEntity) {
         return modelMapper.map(listingEntity, ListingDto.class);
     }
 
     private ListingEntity convertToEntity(ListingDto listingDto) {
         return modelMapper.map(listingDto, ListingEntity.class);
+    }
+
+    private BidDto convertBidToDto(BidEntity bidEntity) {
+        return modelMapper.map(bidEntity, BidDto.class);
+    }
+
+    private BidEntity convertBidToEntity(BidDto bidDto) {
+        return modelMapper.map(bidDto, BidEntity.class);
     }
 }

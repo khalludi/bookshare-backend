@@ -53,7 +53,7 @@ public class BookshareRestControllerIntegrationTest {
             throws Exception {
 
         ListingEntity alex = new ListingEntity(123456, 3, 14.99,
-                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+                new Date(), "Title Calc 3");
 
         List<ListingEntity> allListingEntities = Collections.singletonList(alex);
 
@@ -71,9 +71,9 @@ public class BookshareRestControllerIntegrationTest {
             throws Exception {
 
         ListingEntity listingInDB = new ListingEntity(123456, 3, 14.99,
-                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+                new Date(), "Title Calc 3");
         ListingEntity listingNotInDB = new ListingEntity(123456, 3, 14.99,
-                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+                new Date(), "Title Calc 3");
         listingInDB.setId(123456L);
         listingNotInDB.setId(123457L);
 
@@ -91,7 +91,7 @@ public class BookshareRestControllerIntegrationTest {
     @Test
     public void givenListing_whenPutInvalidListing_thenReturnHttpNotFound() throws Exception {
         ListingEntity listingNotInDB = new ListingEntity(123456, 3, 14.99,
-                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+                new Date(), "Title Calc 3");
         listingNotInDB.setId(123457L);
 
         ListingDto listingDtoNotInDB = modelMapper.map(listingNotInDB, ListingDto.class);
@@ -107,7 +107,7 @@ public class BookshareRestControllerIntegrationTest {
     @Test
     public void givenListing_whenDeleteListing_thenReturnHttpOk() throws Exception {
         ListingEntity listingInDB = new ListingEntity(123456, 3, 14.99,
-                new Date(), 192838079872L, 2879878394L, "Title Calc 3");
+                new Date(), "Title Calc 3");
         listingInDB.setId(1324L);
 
         ListingDto listingDtoInDB = modelMapper.map(listingInDB, ListingDto.class);
