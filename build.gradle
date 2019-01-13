@@ -14,6 +14,16 @@ plugins {
     id "org.flywaydb.flyway" version "5.2.4"
 }
 
+plugins {
+	id "org.sonarqube" version "2.6"
+}
+
+apply plugin: 'jacoco'
+
+jacoco {
+	toolVersion = "0.8.2"
+}
+
 flyway {
     url= "jdbc:postgresql://localhost:26257/testdb"
     user= "user17"
@@ -36,8 +46,16 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
 	implementation('org.springframework.boot:spring-boot-starter-data-rest')
 	implementation('org.springframework.boot:spring-boot-starter-web')
+	implementation('org.springframework.boot:spring-boot-starter-actuator')
+	implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-xml')
+	implementation('com.fasterxml.jackson.datatype:jackson-datatype-joda')
+	implementation('org.springframework.security:spring-security-config')
 	implementation('org.modelmapper:modelmapper:2.3.1')
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
+	compile('org.springframework.security:spring-security-cas')
+	compile('org.springframework.security:spring-security-test')
+	compile('io.springfox:springfox-swagger2:2.9.2')
+	compile('io.springfox:springfox-swagger-ui:2.9.2')
+    compile('org.postgresql:postgresql:42.2.5')
 	compileOnly('org.projectlombok:lombok')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 	testImplementation('org.assertj:assertj-core')

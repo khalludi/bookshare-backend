@@ -1,48 +1,48 @@
 package com.gmu.bookshare.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 @Data
-@Getter
-@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ListingDto {
 
-    private static final SimpleDateFormat dateFormat
-            = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
+    @JsonProperty("id")
     private Long id;
 
+    @JsonProperty("course")
     private String course;
 
+    @JsonProperty("isbn")
     private int isbn;
 
+    @JsonProperty("condition")
     private int condition;
 
+    @JsonProperty("accessCode")
     private boolean accessCode;
 
+    @JsonProperty("price")
     private double price;
 
+    @JsonProperty("image")
     private byte[] image;
 
+    @JsonProperty("description")
     private String description;
 
-    private String createDate;
+    @JsonProperty("createDate")
+    private Date createDate;
 
+    @JsonProperty("title")
     private String title;
-
-    public Date getCreateDateConverted(String timezone) throws ParseException {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
-        return dateFormat.parse(this.createDate);
-    }
-
-    public void setCreateDate(Date date) {
-        this.createDate = dateFormat.format(date);
-    }
 }

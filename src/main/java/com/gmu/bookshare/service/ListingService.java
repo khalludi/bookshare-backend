@@ -1,5 +1,6 @@
 package com.gmu.bookshare.service;
 
+import com.gmu.bookshare.entity.BidEntity;
 import com.gmu.bookshare.entity.ListingEntity;
 import com.gmu.bookshare.error.ListingNotFoundException;
 import com.gmu.bookshare.persistence.ListingRepository;
@@ -14,7 +15,7 @@ public class ListingService {
     private final ListingRepository listingRepository;
 
     @Autowired
-    public ListingService(ListingRepository listingRepository) {
+    ListingService(ListingRepository listingRepository) {
         this.listingRepository = listingRepository;
     }
 
@@ -32,7 +33,23 @@ public class ListingService {
                 .orElseThrow(() -> new ListingNotFoundException(id));
     }
 
-    public ListingEntity getIsbn(int isbn) {
+    ListingEntity getIsbn(int isbn) {
         return listingRepository.findByIsbn(isbn).get(0);
+    }
+
+    public ListingEntity updateListing(ListingEntity listingEntity) {
+        if (listingRepository.findById(listingEntity.getId()).isPresent())
+            listingRepository.save(listingEntity);
+        else
+            return null;
+        return listingEntity;
+    }
+
+    public void deleteListing(Long id) {
+        listingRepository.deleteById(id);
+    }
+
+    public void addBid(Long id, BidEntity bid) {
+        getById(id).addBid(bid);
     }
 }

@@ -1,11 +1,11 @@
 package com.gmu.bookshare.persistence;
 
-import com.gmu.bookshare.entity.Bid;
-import org.springframework.data.repository.CrudRepository;
+import com.gmu.bookshare.entity.BidEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface BidRepository extends CrudRepository<Bid, Long> {
+public interface BidRepository extends JpaRepository<BidEntity, Long> {
 
-    List<Bid> findByUserId(Long l);
+    List<BidEntity> findByUserId(Long l);
 }
