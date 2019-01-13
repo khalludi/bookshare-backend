@@ -100,8 +100,10 @@ public class BookshareApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public BidDto addBid(@PathVariable Long id, @RequestBody BidDto bidDto) {
         BidEntity bid = convertBidToEntity(bidDto);
+        listingService.addBid(id, bid);
+        shareUserService.getShareUser().addBid(bid);
         BidEntity bidCreated = bidService.addListing(bid);
-        listingService.addBid(id, bidCreated);
+
         return convertBidToDto(bidCreated);
     }
 
@@ -118,6 +120,22 @@ public class BookshareApiController {
             return new ShareUserDto("", "");
         }
         return convertShareUserToDto(user);
+    }
+
+    @GetMapping(value = "/user/bid")
+    List<BidDto> getBidsAssociatedWithShareUser() {
+        ShareUser shareUser = shareUserService.getShareUser();
+        return shareUser.getBidsOwned().stream()
+                .map(this::convertBidToDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/user/listing")
+    List<ListingDto> getListingsAssociatedWithShareUser() {
+        ShareUser shareUser = shareUserService.getShareUser();
+        return shareUser.getListingsOwned().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping(name = "/login")
