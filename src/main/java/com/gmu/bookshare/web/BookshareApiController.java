@@ -7,13 +7,26 @@ import com.gmu.bookshare.model.ListingDto;
 import com.gmu.bookshare.service.BidService;
 import com.gmu.bookshare.service.ListingService;
 import com.gmu.bookshare.service.ShareUserService;
+import com.kakawait.spring.security.cas.client.ticket.ProxyTicketProvider;
+import com.kakawait.spring.security.cas.client.validation.AssertionProvider;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,14 +38,30 @@ public class BookshareApiController {
     private final BidService bidService;
     private final ShareUserService shareUserService;
 
+    private final ProxyTicketProvider proxyTicketProvider;
+    private final AssertionProvider assertionProvider;
+
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    public BookshareApiController(ListingService listingService, BidService bidService, ShareUserService shareUserService) {
+    public BookshareApiController(ListingService listingService, BidService bidService,
+                                  ShareUserService shareUserService, ProxyTicketProvider proxyTicketProvider,
+                                  AssertionProvider assertionProvider) {
         this.listingService = listingService;
         this.bidService = bidService;
         this.shareUserService = shareUserService;
+        this.proxyTicketProvider = proxyTicketProvider;
+        this.assertionProvider = assertionProvider;
+    }
+
+    @RequestMapping
+    public String hello(Authentication authentication, Model model) {
+        if (authentication != null && StringUtils.hasText(authentication.getName())) {
+            model.addAttribute("username", authentication.getName());
+            model.addAttribute("principal", authentication.getPrincipal());
+        }
+        return "index";
     }
 
     @GetMapping(value = "/listing/", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -88,6 +117,32 @@ public class BookshareApiController {
         listingService.addBid(id, bidCreated);
         return convertBidToDto(bidCreated);
     }
+
+//    @GetMapping(name = "/login")
+//    public String index(ModelMap modelMap) {
+//        Authentication auth = SecurityContextHolder.getContext()
+//                .getAuthentication();
+//        if(auth != null
+//                && auth.getPrincipal() != null
+//                && auth.getPrincipal() instanceof UserDetails) {
+//            modelMap.put("username", ((UserDetails) auth.getPrincipal()).getUsername());
+//        }
+//        return "secure/index";
+//    }
+//
+//    @GetMapping("/logout")
+//    public String logout(
+//            HttpServletRequest request,
+//            HttpServletResponse response,
+//            SecurityContextLogoutHandler logoutHandler) {
+//        Authentication auth = SecurityContextHolder
+//                .getContext().getAuthentication();
+//        logoutHandler.logout(request, response, auth );
+//        new CookieClearingLogoutHandler(
+//                AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY)
+//                .logout(request, response, auth);
+//        return "auth/logout";
+//    }
 
     private ListingDto convertToDto(ListingEntity listingEntity) {
         return modelMapper.map(listingEntity, ListingDto.class);

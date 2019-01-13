@@ -1,4 +1,4 @@
-package com.gmu.bookshare.utils;
+package com.gmu.bookshare.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

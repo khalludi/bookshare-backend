@@ -11,4 +11,17 @@ spring.datasource:
   password:
 
 server:
-  port: 9009
+  ssl:
+    enabled: true
+    keyStore: file:/etc/cas/tomcat.keystore
+    keyStorePassword: changeit
+    keyPassword: changeit
+  port: 9090
+
+security:
+  cas:
+    server:
+      base-url: https://localhost:9443/
+    service:
+      resolution-mode: dynamic
+  require-ssl: true
