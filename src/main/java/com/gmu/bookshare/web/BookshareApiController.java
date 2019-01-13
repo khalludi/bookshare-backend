@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,13 +102,21 @@ public class BookshareApiController {
         return convertBidToDto(bidCreated);
     }
 
-    @GetMapping(value = "/user/email/{email}")
-    ShareUserDto getByEmail(@PathVariable String email) {
-        ShareUser user = shareUserService.getShareUserByEmail(email);
-        if (user == null) {
-            return new ShareUserDto("", "");
+    @GetMapping(value = "/user/")
+    ShareUserDto getUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null
+                && auth.getPrincipal() != null
+                && auth.getPrincipal() instanceof UserDetails) {
+            String username = ((UserDetails) auth.getPrincipal()).getUsername();
+            ShareUser user = shareUserService.getShareUserByEmail(username);
+            if (user == null) {
+                ShareUser newUser = new ShareUser(username, "default", new HashSet<>(), new HashSet<>());
+                user = shareUserService.addShareUser(newUser);
+            }
+            return convertShareUserToDto(user);
         }
-        return convertShareUserToDto(user);
+        return new ShareUserDto("", "");
     }
 
     @GetMapping(value = "/user/id/{id}")
@@ -117,14 +126,6 @@ public class BookshareApiController {
             return new ShareUserDto("", "");
         }
         return convertShareUserToDto(user);
-    }
-
-    @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public ShareUserDto newListing(@RequestBody ShareUserDto shareUserDto) {
-        ShareUser user = convertShareUserToEntity(shareUserDto);
-        ShareUser userCreated = shareUserService.addShareUser(user);
-        return convertShareUserToDto(userCreated);
     }
 
     @GetMapping(name = "/login")
