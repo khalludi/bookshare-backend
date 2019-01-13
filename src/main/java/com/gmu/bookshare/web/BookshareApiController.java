@@ -101,6 +101,14 @@ public class BookshareApiController {
         return convertBidToDto(bidCreated);
     }
 
+    @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ShareUserDto newListing(@RequestBody ShareUserDto shareUserDto) {
+        ShareUser user = convertShareUserToEntity(shareUserDto);
+        ShareUser userCreated = shareUserService.addShareUser(user);
+        return convertShareUserToDto(userCreated);
+    }
+
     @GetMapping(name = "/login")
     public String index(ModelMap modelMap) {
         Authentication auth = SecurityContextHolder.getContext()
