@@ -101,6 +101,24 @@ public class BookshareApiController {
         return convertBidToDto(bidCreated);
     }
 
+    @GetMapping(value = "/user/email/{email}")
+    ShareUserDto getByEmail(@PathVariable String email) {
+        ShareUser user = shareUserService.getShareUserByEmail(email);
+        if (user == null) {
+            return new ShareUserDto("", "");
+        }
+        return convertShareUserToDto(user);
+    }
+
+    @GetMapping(value = "/user/id/{id}")
+    ShareUserDto getById(@PathVariable Long id) {
+        ShareUser user = shareUserService.getShareUserById(id);
+        if (user == null) {
+            return new ShareUserDto("", "");
+        }
+        return convertShareUserToDto(user);
+    }
+
     @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ShareUserDto newListing(@RequestBody ShareUserDto shareUserDto) {

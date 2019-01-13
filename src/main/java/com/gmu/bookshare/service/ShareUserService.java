@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ShareUserService {
@@ -25,5 +26,19 @@ public class ShareUserService {
             shareUserRepository.save(user);
             return user;
         }
+    }
+
+    public ShareUser getShareUserByEmail(String email) {
+        List<ShareUser> foundUsers = shareUserRepository.findByEmail(email);
+        if (foundUsers.size() > 0) {
+            return foundUsers.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public ShareUser getShareUserById(Long id) {
+        Optional<ShareUser> shareUser = shareUserRepository.findById(id);
+        return shareUser.orElse(null);
     }
 }
