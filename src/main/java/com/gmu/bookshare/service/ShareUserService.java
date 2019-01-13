@@ -3,8 +3,12 @@ package com.gmu.bookshare.service;
 import com.gmu.bookshare.entity.ShareUser;
 import com.gmu.bookshare.persistence.ShareUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,5 +44,23 @@ public class ShareUserService {
     public ShareUser getShareUserById(Long id) {
         Optional<ShareUser> shareUser = shareUserRepository.findById(id);
         return shareUser.orElse(null);
+    }
+
+    public ShareUser getShareUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null
+                && auth.getPrincipal() != null
+                && auth.getPrincipal() instanceof UserDetails) {
+            String username = ((UserDetails) auth.getPrincipal()).getUsername();
+            ShareUser user = getShareUserByEmail(username);
+            if (user == null) {
+                ShareUser newUser = new ShareUser(username, "default", new HashSet<>(), new HashSet<>());
+                user = addShareUser(newUser);
+            }
+            return user;
+        } else {
+            return new ShareUser();
+        }
+
     }
 }
