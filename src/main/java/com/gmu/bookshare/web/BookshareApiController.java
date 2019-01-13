@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,9 +58,13 @@ public class BookshareApiController {
     @PostMapping(value = "/listing", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ListingDto newListing(@RequestBody ListingDto listingDto) {
-        ListingEntity post = convertToEntity(listingDto);
-        ListingEntity postCreated = listingService.addListing(post);
-        return convertToDto(postCreated);
+
+        ShareUser user = shareUserService.getShareUser();
+        ListingEntity listingEntity = convertToEntity(listingDto);
+        user.addListing(listingEntity);
+        ListingEntity listingCreated = listingService.addListing(listingEntity);
+
+        return convertToDto(listingCreated);
     }
 
     @GetMapping(value = "/listing/{id}")
@@ -102,21 +105,10 @@ public class BookshareApiController {
         return convertBidToDto(bidCreated);
     }
 
-    @GetMapping(value = "/user/")
+    @GetMapping(value = "/user")
     ShareUserDto getUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null
-                && auth.getPrincipal() != null
-                && auth.getPrincipal() instanceof UserDetails) {
-            String username = ((UserDetails) auth.getPrincipal()).getUsername();
-            ShareUser user = shareUserService.getShareUserByEmail(username);
-            if (user == null) {
-                ShareUser newUser = new ShareUser(username, "default", new HashSet<>(), new HashSet<>());
-                user = shareUserService.addShareUser(newUser);
-            }
-            return convertShareUserToDto(user);
-        }
-        return new ShareUserDto("", "");
+        ShareUser user = shareUserService.getShareUser();
+        return convertShareUserToDto(user);
     }
 
     @GetMapping(value = "/user/id/{id}")
