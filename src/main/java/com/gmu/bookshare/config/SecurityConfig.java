@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
-                .logout().logoutSuccessUrl("/logout")
+                .logout().logoutSuccessUrl("/bs/api/logout")
                 .and()
                 .addFilterBefore(singleSignOutFilter, CasAuthenticationFilter.class)
                 .addFilterBefore(logoutFilter, LogoutFilter.class);

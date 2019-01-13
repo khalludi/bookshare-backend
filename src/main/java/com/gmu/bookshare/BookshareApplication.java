@@ -106,7 +106,7 @@ public class BookshareApplication {
     @Bean
     public SingleSignOutFilter singleSignOutFilter() {
         SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
-        singleSignOutFilter.setCasServerUrlPrefix("https://localhost:9443/");
+        singleSignOutFilter.setCasServerUrlPrefix("https://localhost:9443");
         singleSignOutFilter.setIgnoreInitConfiguration(true);
         return singleSignOutFilter;
     }

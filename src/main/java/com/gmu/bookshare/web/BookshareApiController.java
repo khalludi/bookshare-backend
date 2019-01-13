@@ -45,7 +45,7 @@ public class BookshareApiController {
         this.shareUserService = shareUserService;
     }
 
-    @GetMapping(value = "/listing/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/listing", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ListingDto> getListings() {
         List<ListingEntity> listings = listingService.getAll();
         return listings.stream()
@@ -53,7 +53,7 @@ public class BookshareApiController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping(value = "/listing/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/listing", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ListingDto newListing(@RequestBody ListingDto listingDto) {
         ListingEntity post = convertToEntity(listingDto);
@@ -82,7 +82,7 @@ public class BookshareApiController {
         listingService.deleteListing(id);
     }
 
-    @GetMapping(value = "/listing/{id}/bid/")
+    @GetMapping(value = "/listing/{id}/bid")
     List<BidDto> getBidsAssociatedWithListing(@PathVariable Long id) {
         ListingEntity listingEntity = listingService.getById(id);
         return listingEntity.getBids().stream()
@@ -90,7 +90,7 @@ public class BookshareApiController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping(value = "/listing/{id}/bid/")
+    @PostMapping(value = "/listing/{id}/bid")
     @ResponseStatus(HttpStatus.CREATED)
     public BidDto addBid(@PathVariable Long id, @RequestBody BidDto bidDto) {
         BidEntity bid = convertBidToEntity(bidDto);
