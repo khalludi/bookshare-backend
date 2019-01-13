@@ -1,6 +1,5 @@
 package com.gmu.bookshare;
 
-import com.gmu.bookshare.config.ApiSecurityConfiguration;
 import com.gmu.bookshare.entity.ListingEntity;
 import com.gmu.bookshare.model.ListingDto;
 import com.gmu.bookshare.service.BidService;
@@ -8,33 +7,16 @@ import com.gmu.bookshare.service.ListingService;
 import com.gmu.bookshare.service.ShareUserService;
 import com.gmu.bookshare.utils.JsonUtil;
 import com.gmu.bookshare.web.BookshareApiController;
-import com.kakawait.spring.boot.security.cas.autoconfigure.CasSecurityProperties;
-import com.kakawait.spring.security.cas.client.ticket.ProxyTicketProvider;
-import com.kakawait.spring.security.cas.client.validation.AssertionProvider;
-import org.jasig.cas.client.validation.TicketValidator;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.cas.ServiceProperties;
-import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
-import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 
 import java.util.Collections;
 import java.util.Date;
@@ -44,6 +26,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,38 +50,7 @@ public class BookshareRestControllerIntegrationTest {
     @MockBean
     private ShareUserService shareUserService;
 
-    @MockBean
-    private ProxyTicketProvider proxyTicketProvider;
-
-    @MockBean
-    private AssertionProvider assertionProvider;
-
-    @MockBean
-    private CasSecurityProperties casSecurityProperties;
-
-    @MockBean
-    private CasAuthenticationEntryPoint casAuthenticationEntryPoint;
-
-    @MockBean
-    private TicketValidator ticketValidator;
-
-    @MockBean
-    private ServiceProperties serviceProperties;
-
-//    @Autowired
-//    private WebApplicationContext context;
-//
-//    private MockMvc mvc;
-//
-//    @Before
-//    public void setup() {
-//        mvc = MockMvcBuilders
-//                .webAppContextSetup(context)
-//                .apply(springSecurity())
-//                .build();
-//    }
-
-    @WithMockUser(value = "spring")
+    @WithMockUser(value = "casuser")
     @Test
     public void givenListing_whenGetListings_thenReturnJsonArray()
             throws Exception {
@@ -118,7 +70,7 @@ public class BookshareRestControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].isbn", is(alex.getIsbn())));
     }
 
-    @WithMockUser(value = "spring")
+    @WithMockUser(value = "casuser")
     @Test
     public void givenListing_whenPutListing_thenReturnHttpOk()
             throws Exception {
@@ -142,7 +94,7 @@ public class BookshareRestControllerIntegrationTest {
                 .andExpect(status().isOk());
     }
 
-    @WithMockUser(value = "spring")
+    @WithMockUser(value = "casuser")
     @Test
     public void givenListing_whenPutInvalidListing_thenReturnHttpNotFound() throws Exception {
         ListingEntity listingNotInDB = new ListingEntity(123456, 3, 14.99,
@@ -160,7 +112,7 @@ public class BookshareRestControllerIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-    @WithMockUser(value = "spring")
+    @WithMockUser(value = "casuser")
     @Test
     public void givenListing_whenDeleteListing_thenReturnHttpOk() throws Exception {
         ListingEntity listingInDB = new ListingEntity(123456, 3, 14.99,

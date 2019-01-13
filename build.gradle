@@ -18,8 +18,10 @@ plugins {
 	id "org.sonarqube" version "2.6"
 }
 
-plugins {
-	id 'jacoco'
+apply plugin: 'jacoco'
+
+jacoco {
+	toolVersion = "0.8.2"
 }
 
 flyway {
@@ -48,7 +50,6 @@ dependencies {
 	implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-xml')
 	implementation('com.fasterxml.jackson.datatype:jackson-datatype-joda')
 	implementation('org.springframework.security:spring-security-config')
-	implementation('com.kakawait:cas-security-spring-boot-starter:1.0.0-beta-2')
 	implementation('org.modelmapper:modelmapper:2.3.1')
 	compile('org.springframework.security:spring-security-cas')
 	compile('org.springframework.security:spring-security-test')
