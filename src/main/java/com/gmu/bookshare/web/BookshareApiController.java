@@ -2,8 +2,10 @@ package com.gmu.bookshare.web;
 
 import com.gmu.bookshare.entity.BidEntity;
 import com.gmu.bookshare.entity.ListingEntity;
+import com.gmu.bookshare.entity.ShareUser;
 import com.gmu.bookshare.model.BidDto;
 import com.gmu.bookshare.model.ListingDto;
+import com.gmu.bookshare.model.ShareUserDto;
 import com.gmu.bookshare.service.BidService;
 import com.gmu.bookshare.service.ListingService;
 import com.gmu.bookshare.service.ShareUserService;
@@ -139,5 +141,13 @@ public class BookshareApiController {
 
     private BidEntity convertBidToEntity(BidDto bidDto) {
         return modelMapper.map(bidDto, BidEntity.class);
+    }
+
+    private ShareUserDto convertShareUserToDto(ShareUser shareUser) {
+        return modelMapper.map(shareUser, ShareUserDto.class);
+    }
+
+    private ShareUser convertShareUserToEntity(ShareUserDto shareUserDto) {
+        return modelMapper.map(shareUserDto, ShareUser.class);
     }
 }
