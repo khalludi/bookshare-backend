@@ -1,8 +1,8 @@
-image: java:8
+image: sonarqube
 
 before_script:
 - apt-get update -qq && apt-get install -y -qq git
-- docker run -d --name sonarqube -p 9000:9000 sonarqube
+- sonarqube
 - git config --global user.email "kali21@masonlive.gmu.edu"
 - git config --global user.name "Khalid Ali"
 
