@@ -3,7 +3,7 @@ sonarqube_master_job:
   only:
   - master
   script:
-  - ./gradlew sonarqube -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin
+  - ./gradlew sonarqube -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.password=$SONAR_PASS
 
 sonarqube_preview_feature_job:
   stage: test
@@ -12,4 +12,4 @@ sonarqube_preview_feature_job:
   script:
   - git checkout origin/master
   - git merge $CI_COMMIT_REF --no-commit --no-ff
-  - ./gradlew sonarqube -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.analysis.mode=preview -Dsonar.gitlab.commit_sha=$CI_BUILD_REF -Dsonar.gitlab.ref=$CI_BUILD_REF_NAME -Dsonar.gitab.project_id=$CI_PROJECT_ID
+  - ./gradlew sonarqube -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.password=$SONAR_PASS -Dsonar.analysis.mode=preview -Dsonar.gitlab.commit_sha=$CI_BUILD_REF -Dsonar.gitlab.ref=$CI_BUILD_REF_NAME -Dsonar.gitab.project_id=$CI_PROJECT_ID
