@@ -12,10 +12,7 @@ buildscript {
 
 plugins {
     id "org.flywaydb.flyway" version "5.2.4"
-}
-
-plugins {
-	id "org.sonarqube" version "2.6"
+	id "org.sonarqube" version "2.7"
 }
 
 apply plugin: 'jacoco'
