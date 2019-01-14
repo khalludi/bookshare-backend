@@ -1,7 +1,7 @@
 image: java:8
 
 before_script:
-- apt-get update -qq && apt-get install -y -qq git && apt-get install -y -qq docker-ce
+- apt-get update -qq && apt-get install -y -qq git && apt-get install -y -qq docker
 - docker run -d --name sonarqube -p 9000:9000 sonarqube
 - git config --global user.email "kali21@masonlive.gmu.edu"
 - git config --global user.name "Khalid Ali"
