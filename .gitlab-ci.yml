@@ -1,5 +1,7 @@
 before_script:
 - apt-get update -qq && apt-get install -y -qq git
+- git config --global user.email "kali21@masonlive.gmu.edu"
+- git config --global user.name "Khalid Ali"
 
 sonarqube_master_job:
   stage: test
