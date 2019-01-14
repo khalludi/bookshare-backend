@@ -12,5 +12,5 @@ addons:
       secure: $SONAR_LOGIN # encrypted value of your token
 
 script:
-# other script steps might be done before running the actual analysis
+# other script steps
 - ./gradlew sonarqube
