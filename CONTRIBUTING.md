@@ -13,8 +13,17 @@ Please note we have a code of conduct, please follow it in all your interactions
    variables, exposed ports, useful file locations and container parameters.
 3. Increase the version numbers in any examples files and the README.md to the new version that this
    Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you
-   do not have permission to do that, you may request the second reviewer to merge it for you.
+4. The Travis-CI checks **WILL FAIL**. Do not be alarmed, this is normal due to environment variables
+   being secret. A reviewer will do the following steps once your PR is made:
+
+   1. External collaborator creates PR.
+   2. Internal reviewer reviews code for any security vulnerabilities (such as revealing env vars)
+   3. Internal reviewer creates a OHDSI repo branch to merge external PR into.
+   4. Internal reviewer modifes external PR to point to the new OHDSI repo branch to be the head.
+   5. PR is accepted and closed
+   6. New PR is created from internal OHSI branch. Travis will execute on the internal branch against our 3 dbs.
+   7. Once travis build completes with no errors on internal branch, it can be merged into master.
+
 
 ## Code of Conduct
 
