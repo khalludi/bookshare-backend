@@ -1,6 +1,8 @@
-# Project Title
+# Bookshare Backend
 
-One Paragraph of project description goes here
+This repository is the backend portion of a project called Bookshare. The main project is to create a website where college students can buy and sell books to each other in a Craigslist-like fashion. This project was originally implemented in Python, but it has been neglected for some time. Hence, the reimplementation.
+
+This project is aimed specifically for students of George Mason University, but the code can be reformatted for other schools. The frontend portion of this project is being developed [here]().
 
 ## Getting Started
 
@@ -8,23 +10,17 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
+Highly, highly recommend using Intellij Idea as the IDE. This project runs on Java 8. It also depends on another project that implements a CAS Server for authentication located [here](https://git.gmu.edu/kali21/cas-server).
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+Once you have Java 8 installed, go ahead and clone the project.
 
 ```
-Give the example
+$ git clone https://github.com/khalludi/bookshare-backend.git
 ```
 
-And repeat
+Go inside the folder and 
 
 ```
 until finished
@@ -34,54 +30,45 @@ End with an example of getting some data out of the system or using it for a lit
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
-
 ### Break down into end to end tests
 
-Explain what these tests test and why
+There are integration tests that test each part of the service separately.
 
 ```
-Give an example
+$ ./gradlew test
 ```
 
 ### And coding style tests
 
-Explain what these tests test and why
+To be implemented.
 
 ```
-Give an example
+To be implemented.
 ```
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+At the moment, there is no deployment process. I would like to host the service in a Docker image. Possibly have a separate one for the database as well.
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [CockroachDB](https://www.cockroachlabs.com/) - Resilient SQL Database
+* [Flyway](https://flywaydb.org/) - Database Versioning Tool
+* [Gradle](https://gradle.org/) - Dependency Management
+* [Jacoco](https://github.com/jacoco/jacoco) - Java Code Coverage tool
+* [Spring](https://spring.io/) - Java Framework
+* [SonarQube](https://www.sonarqube.org/) - Continuous Code Quality
+* [Swagger](https://swagger.io/) - API docs
+* [Travis-CI](https://travis-ci.com/) - Platform for automated CI/CD
 
 ## Contributing
 
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
-
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/khalludi/bookshare-backend/contributors) who participated in this project.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
