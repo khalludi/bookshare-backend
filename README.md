@@ -2,7 +2,7 @@
 
 This repository is the backend portion of a project called Bookshare. The main project is to create a website where college students can buy and sell books to each other in a Craigslist-like fashion. This project was originally implemented in Python, but it has been neglected for some time. Hence, the reimplementation.
 
-This project is aimed specifically for students of George Mason University, but the code can be reformatted for other schools. The frontend portion of this project is being developed [here]().
+This project is aimed specifically for students of George Mason University, but the code can be reformatted for other schools. The frontend portion of this project is being developed [here](https://git.gmu.edu/kali21/bookshare-frontend).
 
 ## Getting Started
 
@@ -20,13 +20,48 @@ Once you have Java 8 installed, go ahead and clone the project.
 $ git clone https://github.com/khalludi/bookshare-backend.git
 ```
 
-Go inside the folder and 
+For project to work, you also need to clone the CAS Server project. The CAS server require Java 11 to run.
 
 ```
-until finished
+$ git clone https://git.gmu.edu/kali21/cas-server
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+For the CAS server, you need to have a certificate and a keystore. Use the following commands to create the keystore and certificate.
+
+```
+$ keytool -genkey -keyalg RSA -alias tomcat -keystore tomcat.keystore -storepass changeit -validity 360 -keysize 2048
+$ keytool -export -alias tomcat -file thekeystore.crt 
+-keystore tomcat.keystore
+```
+
+Now, you need to include the certificate file in your JDK's `cacerts` file. Make sure to change the last part of the command to the path of your JDK.
+
+```
+$ keytool -import -alias tomcat -storepass changeit -file thekeystore.crt
+ -keystore "C:\Program Files\Java\jdk1.8.0_152\jre\lib\security\cacerts"
+```
+
+Last thing before running is to change `cas-user/src/main/resources/etc/cas/config/cas.properties` to reflect your configuration. Particularly line 15 with the path to your keystore.
+
+```
+15 server.ssl.keyStore=file:/etc/cas/tomcat.keystore
+```
+
+Finally, go back to the root of the `cas-user` repo and run the following command to start the server.
+
+```
+$ ./build.sh run
+```
+
+Now, going back to this folder's repo, run the following command to go to start the REST service.
+
+```
+$ gradle bootRun
+```
+
+You should now be able to access all the endpoints at [https://localhost:9090](https://localhost:9090). The API docs are available at [https://localhost:9090/swagger-ui.html](https://localhost:9090/swagger-ui.html). 
+
+The CAS server has one login entry, username: `casUser`, password: `Mellon`. The server is basic because the project will eventually use GMU's sophisticated CAS server in production.
 
 ## Running the tests
 
@@ -35,7 +70,7 @@ End with an example of getting some data out of the system or using it for a lit
 There are integration tests that test each part of the service separately.
 
 ```
-$ ./gradlew test
+$ gradle test
 ```
 
 ### And coding style tests
@@ -71,4 +106,4 @@ See also the list of [contributors](https://github.com/khalludi/bookshare-backen
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
