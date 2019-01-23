@@ -1,0 +1,36 @@
+version: '3.5'
+
+services:
+  flyway:
+    image: boxfuse/flyway:5.2.1
+    command: -url=jdbc:postgresql://db:26257/testdb?sslmode=disable -user=user17 -password= -connectRetries=60 migrate
+    volumes:
+      - ./src/main/resources/db/migration:/flyway/sql
+    depends_on:
+      - db
+      - db-init
+    networks:
+      - roachnet
+  db:
+    image: cockroachdb/cockroach:v2.1.4
+    command: start --insecure
+    expose:
+      - "8080"
+      - "26257"
+    ports:
+      - "26257:26257"
+      - "8080:8080"
+    networks:
+      - roachnet
+  db-init:
+    image: cockroachdb/cockroach:v2.1.4
+    networks:
+      - roachnet
+    volumes:
+      - ./setup_db.sh:/setup_db.sh
+    entrypoint: "/bin/bash"
+    command: /setup_db.sh
+    depends_on:
+      - db
+networks:
+  roachnet:
