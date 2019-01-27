@@ -47,7 +47,7 @@ public class BookshareApplication {
     @Bean
     public ServiceProperties serviceProperties() {
         ServiceProperties serviceProperties = new ServiceProperties();
-        serviceProperties.setService("https://bs-backend:9090/login/cas");
+        serviceProperties.setService("https://localhost:9090/login/cas");
         serviceProperties.setSendRenew(false);
         return serviceProperties;
     }
@@ -60,7 +60,7 @@ public class BookshareApplication {
         // URL where user will be redirected to for authentication
         CasAuthenticationEntryPoint entryPoint
                 = new CasAuthenticationEntryPoint();
-        entryPoint.setLoginUrl("https://cas-server:9443/login");
+        entryPoint.setLoginUrl("https://login.gmu.edu/login");
         entryPoint.setServiceProperties(sP);
         return entryPoint;
     }
@@ -73,7 +73,7 @@ public class BookshareApplication {
     @Bean
     public TicketValidator ticketValidator() {
         return new Cas30ServiceTicketValidator(
-                "https://cas-server:9443/");
+                "https://login.gmu.edu/");
     }
 
     @Bean
@@ -97,7 +97,7 @@ public class BookshareApplication {
     @Bean
     public LogoutFilter logoutFilter() {
         LogoutFilter logoutFilter = new LogoutFilter(
-                "https://cas-server:9443/logout",
+                "https://login.gmu.edu/logout",
                 securityContextLogoutHandler());
         logoutFilter.setFilterProcessesUrl("/logout/cas");
         return logoutFilter;
@@ -106,7 +106,7 @@ public class BookshareApplication {
     @Bean
     public SingleSignOutFilter singleSignOutFilter() {
         SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
-        singleSignOutFilter.setCasServerUrlPrefix("https://cas-server:9443");
+        singleSignOutFilter.setCasServerUrlPrefix("https://login.gmu.edu");
         singleSignOutFilter.setIgnoreInitConfiguration(true);
         return singleSignOutFilter;
     }

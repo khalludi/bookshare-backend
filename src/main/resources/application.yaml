@@ -21,7 +21,7 @@ server:
 security:
   cas:
     server:
-      base-url: https://cas-server:9443/
+      base-url: https://login.gmu.edu/
     service:
       resolution-mode: dynamic
   require-ssl: true
