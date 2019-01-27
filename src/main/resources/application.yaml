@@ -6,7 +6,7 @@ spring.jpa:
   show-sql: true
 
 spring.datasource:
-  url: jdbc:postgresql://localhost:26257/testdb?sslmode=disable
+  url: jdbc:postgresql://db:26257/testdb?sslmode=disable
   username: user17
   password:
 
@@ -21,7 +21,7 @@ server:
 security:
   cas:
     server:
-      base-url: https://localhost:9443/
+      base-url: https://login.gmu.edu/
     service:
       resolution-mode: dynamic
   require-ssl: true
