@@ -1,6 +1,24 @@
-version: '3.5'
+version: '3'
 
 services:
+  bs-frontend:
+    image: bookshare-frontend
+    expose:
+      - "8081"
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
+  bs-backend:
+    image: bookshare-backend
+    depends_on: 
+      - db
+    expose:
+      - "9090"
+    ports:
+      - "9090:9090"
+    networks:
+      - backend
   flyway:
     image: boxfuse/flyway:5.2.1
     command: -url=jdbc:postgresql://db:26257/testdb?sslmode=disable -user=user17 -password= -connectRetries=60 migrate
@@ -22,6 +40,7 @@ services:
       - "8080:8080"
     networks:
       - roachnet
+      - backend
   db-init:
     image: cockroachdb/cockroach:v2.1.4
     networks:
@@ -34,3 +53,4 @@ services:
       - db
 networks:
   roachnet:
+  backend:

@@ -55,8 +55,9 @@ public class BookshareApiController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping(value = "/listing", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
+//    @PostMapping(value = "/listing", consumes = MediaType.APPLICATION_JSON_VALUE)
+@PostMapping(value = "/listing")
+@ResponseStatus(HttpStatus.CREATED)
     public ListingDto newListing(@RequestBody ListingDto listingDto) {
 
         ShareUser user = shareUserService.getShareUser();

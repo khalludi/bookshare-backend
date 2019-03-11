@@ -48,6 +48,7 @@ dependencies {
 	implementation('com.fasterxml.jackson.datatype:jackson-datatype-joda')
 	implementation('org.springframework.security:spring-security-config')
 	implementation('org.modelmapper:modelmapper:2.3.1')
+	compile('com.allanditzel:spring-security-csrf-token-filter:1.1')
 	compile('org.springframework.security:spring-security-cas')
 	compile('org.springframework.security:spring-security-test')
 	compile('io.springfox:springfox-swagger2:2.9.2')
