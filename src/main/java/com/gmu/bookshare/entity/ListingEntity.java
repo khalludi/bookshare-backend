@@ -25,7 +25,7 @@ public class ListingEntity {
 
     @NonNull
     @Column(name = "isbn")
-    private int isbn;
+    private long isbn;
 
     @NonNull
     @Column(name = "condition")

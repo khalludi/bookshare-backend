@@ -12,6 +12,9 @@ spring.datasource:
   username: user17
   password:
 
+secret:
+  apikey: ${API_KEY:"12345"}
+
 #logging:
 #  level:
 #    ROOT: debug

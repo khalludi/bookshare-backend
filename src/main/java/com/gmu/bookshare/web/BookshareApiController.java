@@ -1,5 +1,7 @@
 package com.gmu.bookshare.web;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmu.bookshare.entity.BidEntity;
 import com.gmu.bookshare.entity.ListingEntity;
 import com.gmu.bookshare.entity.ShareUser;
@@ -11,6 +13,8 @@ import com.gmu.bookshare.service.ListingService;
 import com.gmu.bookshare.service.ShareUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +26,12 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +42,9 @@ public class BookshareApiController {
     private final ListingService listingService;
     private final BidService bidService;
     private final ShareUserService shareUserService;
+
+    @Value("${secret.apikey}")
+    private String API_KEY;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -139,17 +149,24 @@ public class BookshareApiController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(name = "/login")
-    public String index(ModelMap modelMap) {
-        Authentication auth = SecurityContextHolder.getContext()
-                .getAuthentication();
-        if (auth != null
-                && auth.getPrincipal() != null
-                && auth.getPrincipal() instanceof UserDetails) {
-            modelMap.put("username", ((UserDetails) auth.getPrincipal()).getUsername());
-        }
-        return "secured/index";
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public void loginRedirect(HttpServletResponse httpServletResponse) {
+        String redirectURL = "https://localhost:9090";
+        httpServletResponse.setHeader("Location", redirectURL);
+        httpServletResponse.setStatus(302);
     }
+
+//    @GetMapping(name = "/login")
+//    public String index(ModelMap modelMap) {
+//        Authentication auth = SecurityContextHolder.getContext()
+//                .getAuthentication();
+//        if (auth != null
+//                && auth.getPrincipal() != null
+//                && auth.getPrincipal() instanceof UserDetails) {
+//            modelMap.put("username", ((UserDetails) auth.getPrincipal()).getUsername());
+//        }
+//        return "secured/index";
+//    }
 
     @GetMapping("/logout")
     public String logout(
@@ -170,7 +187,43 @@ public class BookshareApiController {
     }
 
     private ListingEntity convertToEntity(ListingDto listingDto) {
+        // Add creation date
+        listingDto.setCreateDate(new Date());
+
+        // Get title from REST call
+        listingDto.setTitle(getTitleFromIsbn(listingDto.getIsbn()));
+
         return modelMapper.map(listingDto, ListingEntity.class);
+    }
+
+    private String getTitleFromIsbn(long isbn) {
+        final String uri = "https://www.googleapis.com/books/v1/volumes?q="+isbn+"&key="+API_KEY;
+
+        // Get titles from API using ISBN
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
+
+        // Create an Jackson mapper
+        ObjectMapper mapper = new ObjectMapper();
+
+        // Try to map the JSON, return empty if failed.
+        JsonNode root;
+        try {
+            root = mapper.readTree(response.getBody());
+        } catch (IOException e) {
+            return "";
+        }
+
+        // Get title from path
+        String title = "";
+        JsonNode itemsNode = root.path("items");
+        for (JsonNode node : itemsNode) {
+            JsonNode volumeInfo = node.path("volumeInfo");
+            title = volumeInfo.path("title").asText();
+            break;
+        }
+
+        return title;
     }
 
     private BidDto convertBidToDto(BidEntity bidEntity) {

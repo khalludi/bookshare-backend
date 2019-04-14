@@ -23,7 +23,7 @@ public class ListingDto {
     private String course;
 
     @JsonProperty("isbn")
-    private int isbn;
+    private long isbn;
 
     @JsonProperty("condition")
     private int condition;
