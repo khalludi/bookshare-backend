@@ -19,7 +19,7 @@ CREATE TABLE Listing (
     price DECIMAL(5,2),
     image bytea,
     description varchar(1000),
-    createDate DATE,
+    createDate TIMESTAMPTZ,
     shareUserId bigint NOT NULL,
     CONSTRAINT user_fk FOREIGN KEY (shareUserId) REFERENCES ShareUser (id),
     title varchar(255)
