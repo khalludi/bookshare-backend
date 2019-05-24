@@ -3,6 +3,7 @@ package com.gmu.bookshare.web;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmu.bookshare.entity.BidEntity;
+import com.gmu.bookshare.entity.ImageEntity;
 import com.gmu.bookshare.entity.ListingEntity;
 import com.gmu.bookshare.entity.ShareUser;
 import com.gmu.bookshare.model.BidDto;
@@ -11,26 +12,30 @@ import com.gmu.bookshare.model.ShareUserDto;
 import com.gmu.bookshare.service.BidService;
 import com.gmu.bookshare.service.ListingService;
 import com.gmu.bookshare.service.ShareUserService;
+import com.gmu.bookshare.wrapper.DataWrapper;
+import com.gmu.bookshare.wrapper.FormWrapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,17 +70,52 @@ public class BookshareApiController {
                 .collect(Collectors.toList());
     }
 
-//    @PostMapping(value = "/listing", consumes = MediaType.APPLICATION_JSON_VALUE)
-@PostMapping(value = "/listing")
-@ResponseStatus(HttpStatus.CREATED)
-    public ListingDto newListing(@RequestBody ListingDto listingDto) {
+    @PostMapping(value = "/listing")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<?> newListing(@ModelAttribute FormWrapper model) throws Exception {
+
+        // Convert data back to JSON
+        ObjectMapper dataMapper = new ObjectMapper();
+        DataWrapper dataWrapper = dataMapper.readValue(model.getData(), DataWrapper.class);
+
+        // Convert DataWrapper to ListingDto
+        ListingDto listingDto = new ListingDto();
+        listingDto.setAccessCode(dataWrapper.getAccessCode());
+        listingDto.setCondition(dataWrapper.getCondition());
+        listingDto.setCourse(dataWrapper.getCourse());
+        listingDto.setDescription(dataWrapper.getDescription());
+        listingDto.setIsbn(Long.valueOf(dataWrapper.getIsbn()));
+
+        // Get array of images
+        List<byte[]> images = new ArrayList<>();
+        if (model.getImages() != null) {
+            for (MultipartFile image : model.getImages()) {
+                // Set image if provided
+                if (image != null && !image.isEmpty()) {
+                    try {
+                        images.add(image.getBytes());
+                        Path path = Paths.get(image.getName());
+                        Files.write(path, image.getBytes());
+                    } catch (IOException e) {
+                        System.err.println("ERROR: Could not get bytes off of image");
+                    }
+                }
+            }
+        }
 
         ShareUser user = shareUserService.getShareUser();
         ListingEntity listingEntity = convertToEntity(listingDto);
-        user.addListing(listingEntity);
-        ListingEntity listingCreated = listingService.addListing(listingEntity);
 
-        return convertToDto(listingCreated);
+        user.addListing(listingEntity);
+
+        images.forEach(x -> {
+            ImageEntity image = new ImageEntity(x);
+            listingEntity.addImages(image);
+        });
+
+        listingService.addListing(listingEntity);
+
+        return new ResponseEntity("Successfully uploaded!", HttpStatus.OK);
     }
 
     @GetMapping(value = "/listing/{id}")

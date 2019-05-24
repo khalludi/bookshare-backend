@@ -17,7 +17,6 @@ CREATE TABLE Listing (
     condition INTEGER,
     accessCode INTEGER,
     price DECIMAL(5,2),
-    image bytea,
     description varchar(1000),
     createDate TIMESTAMPTZ,
     shareUserId bigint NOT NULL,
@@ -35,6 +34,14 @@ CREATE TABLE Bid (
     CONSTRAINT listing_fk FOREIGN KEY (listingId) REFERENCES Listing (id),
     shareUserId bigint NOT NULL,
     CONSTRAINT shareUser_fk FOREIGN KEY (shareUserId) REFERENCES ShareUser (id)
+);
+
+DROP TABLE IF EXISTS Image;
+CREATE TABLE Image (
+    id SERIAL PRIMARY KEY,
+    image bytea,
+    listingId bigint NOT NULL,
+    CONSTRAINT listing_fk FOREIGN KEY (listingId) REFERENCES Listing (id)
 );
 
 --DROP TABLE IF EXISTS listing2bids;

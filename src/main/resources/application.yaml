@@ -13,7 +13,7 @@ spring.datasource:
   password:
 
 secret:
-  apikey: ${API_KEY:"12345"}
+  apikey: ${API_KEY}
 
 #logging:
 #  level:

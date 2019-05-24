@@ -1,16 +1,16 @@
 package com.gmu.bookshare.entity;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "Listing")
 public class ListingEntity {
@@ -23,23 +23,17 @@ public class ListingEntity {
     @Column(name = "course")
     private String course;
 
-    @NonNull
     @Column(name = "isbn")
     private long isbn;
 
-    @NonNull
     @Column(name = "condition")
     private int condition;
 
     @Column(name = "accessCode")
-    private boolean accessCode;
+    private int accessCode;
 
-    @NonNull
     @Column(name = "price")
     private double price;
-
-    @Column(name = "image")
-    private byte[] image;
 
     @Column(name = "description")
     private String description;
@@ -67,9 +61,17 @@ public class ListingEntity {
     )
     private Set<BidEntity> bids = new HashSet<>();
 
+    @OneToMany(
+            mappedBy = "image",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<ImageEntity> images = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shareUserId")
     private ShareUser shareUser;
+
 
     public void addBid(BidEntity bid) {
         bids.add(bid);
@@ -81,6 +83,11 @@ public class ListingEntity {
         bid.setListing(null);
     }
 
+    public void addImages(ImageEntity image) {
+        images.add(image);
+        image.setListing(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,6 +97,6 @@ public class ListingEntity {
 
     @Override
     public int hashCode() {
-        return 41;
+        return (int) (isbn * condition * accessCode * course.hashCode() * description.hashCode());
     }
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -29,13 +30,13 @@ public class ListingDto {
     private int condition;
 
     @JsonProperty("accessCode")
-    private boolean accessCode;
+    private int accessCode;
 
     @JsonProperty("price")
     private double price;
 
     @JsonProperty("image")
-    private byte[] image;
+    private List<byte[]> image;
 
     @JsonProperty("description")
     private String description;
