@@ -33,7 +33,7 @@ public class ListingService {
                 .orElseThrow(() -> new ListingNotFoundException(id));
     }
 
-    ListingEntity getIsbn(int isbn) {
+    ListingEntity getIsbn(long isbn) {
         return listingRepository.findByIsbn(isbn).get(0);
     }
 

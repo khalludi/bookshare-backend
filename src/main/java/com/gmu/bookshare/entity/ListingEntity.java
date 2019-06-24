@@ -97,6 +97,6 @@ public class ListingEntity {
 
     @Override
     public int hashCode() {
-        return (int) (isbn * condition * accessCode * course.hashCode() * description.hashCode());
+        return 71;
     }
 }

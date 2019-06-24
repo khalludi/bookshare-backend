@@ -46,12 +46,18 @@ public class ListingEntityRepositoryIntegrationTest {
         //given
         ShareUser shareUser = new ShareUser("Bobby Jones", "bobbyjones@yahoo.com",
                 new HashSet<>(), new HashSet<>());
-        ListingEntity book1 = new ListingEntity(123456, 3, 14.99,
-                new Date(), "Title Calc 3");
-        ListingEntity book2 = new ListingEntity(123456, 3, 14.99,
-                new Date(), "Title Calc 3");
-        ListingEntity book3 = new ListingEntity(123456, 3, 14.99,
-                new Date(), "Title Calc 3");
+        ListingEntity book1 = new ListingEntity(new Date(), "Title Calc 3");
+        book1.setIsbn(123456);
+        book1.setAccessCode(3);
+        book1.setPrice(14.99);
+        ListingEntity book2 = new ListingEntity(new Date(), "Title Calc 3");
+        book2.setIsbn(123456);
+        book2.setAccessCode(3);
+        book2.setPrice(14.99);
+        ListingEntity book3 = new ListingEntity(new Date(), "Title Calc 3");
+        book3.setIsbn(123456);
+        book3.setAccessCode(3);
+        book3.setPrice(14.99);
 
         shareUser.addListing(book1);
         shareUser.addListing(book2);
@@ -83,8 +89,10 @@ public class ListingEntityRepositoryIntegrationTest {
         //given
         ShareUser shareUser = new ShareUser("John Doe", "jdoe@outlook.com",
                 new HashSet<>(), new HashSet<>());
-        ListingEntity book1 = new ListingEntity(123456, 3, 14.99,
-                new Date(), "Title Calc 3");
+        ListingEntity book1 = new ListingEntity(new Date(), "Title Calc 3");
+        book1.setIsbn(123456);
+        book1.setAccessCode(3);
+        book1.setPrice(14.99);
 
         shareUser.addListing(book1);
 
