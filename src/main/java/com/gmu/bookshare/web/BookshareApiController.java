@@ -119,12 +119,12 @@ public class BookshareApiController {
     }
 
     @GetMapping(value = "/listing/{id}")
-    ListingDto getOne(@PathVariable Long id) {
+    public ListingDto getOne(@PathVariable Long id) {
         return convertToDto(listingService.getById(id));
     }
 
     @PutMapping(value = "/listing/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<ListingDto> updateListing(@RequestBody ListingDto listingDto) {
+    public ResponseEntity<ListingDto> updateListing(@RequestBody ListingDto listingDto) {
         ListingEntity listingEntity = convertToEntity(listingDto);
         ListingEntity ret = listingService.updateListing(listingEntity);
         if (ret == null) {
@@ -135,12 +135,12 @@ public class BookshareApiController {
     }
 
     @DeleteMapping(value = "/listing/{id}")
-    void deleteListing(@PathVariable Long id) {
+    public void deleteListing(@PathVariable Long id) {
         listingService.deleteListing(id);
     }
 
     @GetMapping(value = "/listing/{id}/bid")
-    List<BidDto> getBidsAssociatedWithListing(@PathVariable Long id) {
+    public List<BidDto> getBidsAssociatedWithListing(@PathVariable Long id) {
         ListingEntity listingEntity = listingService.getById(id);
         return listingEntity.getBids().stream()
                 .map(this::convertBidToDto)
@@ -159,13 +159,13 @@ public class BookshareApiController {
     }
 
     @GetMapping(value = "/user")
-    ShareUserDto getUser() {
+    public ShareUserDto getUser() {
         ShareUser user = shareUserService.getShareUser();
         return convertShareUserToDto(user);
     }
 
     @GetMapping(value = "/user/id/{id}")
-    ShareUserDto getById(@PathVariable Long id) {
+    public ShareUserDto getById(@PathVariable Long id) {
         ShareUser user = shareUserService.getShareUserById(id);
         if (user == null) {
             return new ShareUserDto("", "");
@@ -174,7 +174,7 @@ public class BookshareApiController {
     }
 
     @GetMapping(value = "/user/bid")
-    List<BidDto> getBidsAssociatedWithShareUser() {
+    public List<BidDto> getBidsAssociatedWithShareUser() {
         ShareUser shareUser = shareUserService.getShareUser();
         return shareUser.getBidsOwned().stream()
                 .map(this::convertBidToDto)
@@ -182,7 +182,7 @@ public class BookshareApiController {
     }
 
     @GetMapping(value = "/user/listing")
-    List<ListingDto> getListingsAssociatedWithShareUser() {
+    public List<ListingDto> getListingsAssociatedWithShareUser() {
         ShareUser shareUser = shareUserService.getShareUser();
         return shareUser.getListingsOwned().stream()
                 .map(this::convertToDto)
@@ -195,18 +195,6 @@ public class BookshareApiController {
         httpServletResponse.setHeader("Location", redirectURL);
         httpServletResponse.setStatus(302);
     }
-
-//    @GetMapping(name = "/login")
-//    public String index(ModelMap modelMap) {
-//        Authentication auth = SecurityContextHolder.getContext()
-//                .getAuthentication();
-//        if (auth != null
-//                && auth.getPrincipal() != null
-//                && auth.getPrincipal() instanceof UserDetails) {
-//            modelMap.put("username", ((UserDetails) auth.getPrincipal()).getUsername());
-//        }
-//        return "secured/index";
-//    }
 
     @GetMapping("/logout")
     public String logout(

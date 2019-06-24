@@ -17,18 +17,11 @@ import org.springframework.security.cas.authentication.CasAuthenticationProvider
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 
 import javax.servlet.http.HttpSessionEvent;
-import java.util.Arrays;
-import java.util.Collections;
 
 @SpringBootApplication
 public class BookshareApplication {
@@ -51,7 +44,7 @@ public class BookshareApplication {
     }
 
     @Bean
-    public ServiceProperties serviceProperties() {
+    private ServiceProperties serviceProperties() {
         ServiceProperties serviceProperties = new ServiceProperties();
         serviceProperties.setService("https://localhost:9090/login/cas");
         serviceProperties.setSendRenew(false);
@@ -78,7 +71,7 @@ public class BookshareApplication {
      * @return TicketValidator object
      */
     @Bean
-    public TicketValidator ticketValidator() {
+    private TicketValidator ticketValidator() {
         return new Cas30ServiceTicketValidator(
                 "https://login.gmu.edu/");
     }
@@ -97,7 +90,7 @@ public class BookshareApplication {
     }
 
     @Bean
-    public SecurityContextLogoutHandler securityContextLogoutHandler() {
+    private SecurityContextLogoutHandler securityContextLogoutHandler() {
         return new SecurityContextLogoutHandler();
     }
 
