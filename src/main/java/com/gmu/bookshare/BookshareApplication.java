@@ -44,7 +44,7 @@ public class BookshareApplication {
     }
 
     @Bean
-    private ServiceProperties serviceProperties() {
+    public ServiceProperties serviceProperties() {
         ServiceProperties serviceProperties = new ServiceProperties();
         serviceProperties.setService("https://localhost:9090/login/cas");
         serviceProperties.setSendRenew(false);
@@ -71,7 +71,7 @@ public class BookshareApplication {
      * @return TicketValidator object
      */
     @Bean
-    private TicketValidator ticketValidator() {
+    public TicketValidator ticketValidator() {
         return new Cas30ServiceTicketValidator(
                 "https://login.gmu.edu/");
     }
@@ -90,7 +90,7 @@ public class BookshareApplication {
     }
 
     @Bean
-    private SecurityContextLogoutHandler securityContextLogoutHandler() {
+    public SecurityContextLogoutHandler securityContextLogoutHandler() {
         return new SecurityContextLogoutHandler();
     }
 
