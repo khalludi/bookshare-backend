@@ -55,6 +55,9 @@ public class BookshareApiController {
     private ModelMapper modelMapper;
 
     @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
     public BookshareApiController(ListingService listingService, BidService bidService,
                                   ShareUserService shareUserService) {
         this.listingService = listingService;
@@ -115,7 +118,7 @@ public class BookshareApiController {
 
         listingService.addListing(listingEntity);
 
-        return new ResponseEntity("Successfully uploaded!", HttpStatus.OK);
+        return new ResponseEntity<>("Successfully uploaded!", HttpStatus.OK);
     }
 
     @GetMapping(value = "/listing/{id}")
@@ -228,7 +231,6 @@ public class BookshareApiController {
         final String uri = "https://www.googleapis.com/books/v1/volumes?q="+isbn+"&key="+API_KEY;
 
         // Get titles from API using ISBN
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
 
         // Create an Jackson mapper

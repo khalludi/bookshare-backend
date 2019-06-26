@@ -13,10 +13,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.Date;
@@ -24,10 +27,11 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,6 +44,9 @@ public class BookshareRestControllerIntegrationTest {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @MockBean
+    private RestTemplate restTemplate;
 
     @MockBean
     private ListingService listingService;
@@ -72,9 +79,6 @@ public class BookshareRestControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].isbn", is((int) alex.getIsbn())));
     }
 
-    /*
-    At a later date, need to mock the Google API call so that the following two tests work
-
     @WithMockUser(value = "casuser")
     @Test
     public void givenListing_whenPutListing_thenReturnHttpOk()
@@ -84,18 +88,15 @@ public class BookshareRestControllerIntegrationTest {
         listingInDB.setIsbn(123456L);
         listingInDB.setAccessCode(3);
         listingInDB.setPrice(14.99);
-        ListingEntity listingNotInDB = new ListingEntity(new Date(), "Title Calc 3");
-        listingNotInDB.setIsbn(123456L);
-        listingNotInDB.setAccessCode(3);
-        listingNotInDB.setPrice(14.99);
-
         listingInDB.setId(123456L);
-        listingNotInDB.setId(123457L);
 
         ListingDto listingDtoInDB = modelMapper.map(listingInDB, ListingDto.class);
-        ListingDto listingDtoNotInDB = modelMapper.map(listingNotInDB, ListingDto.class);
 
         given(listingService.updateListing(any(ListingEntity.class))).willReturn(listingInDB);
+
+        String exampleJson = "{'items': ['volumeInfo': {'title': 'Physics'}]}";
+        when(restTemplate.getForEntity("https://www.googleapis.com/books/v1/volumes?q=123456&key=api_key", String.class))
+                .thenReturn(new ResponseEntity<>(exampleJson, HttpStatus.OK));
 
         mvc.perform(put("/bs/api/listing/" + listingDtoInDB.getId())
                 .with(csrf())
@@ -117,13 +118,17 @@ public class BookshareRestControllerIntegrationTest {
 
         given(listingService.updateListing(any(ListingEntity.class))).willReturn(null);
 
+        String exampleJson = "{'items': ['volumeInfo': {'title': 'Physics'}]}";
+        when(restTemplate.getForEntity("https://www.googleapis.com/books/v1/volumes?q=123456&key=api_key", String.class))
+                .thenReturn(new ResponseEntity<>(exampleJson, HttpStatus.OK));
+
         mvc.perform(put("/bs/api/listing/" + listingDtoNotInDB.getId())
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValueAsString(listingDtoNotInDB)))
                 .andExpect(status().isNotFound());
     }
-    */
+
 
     @WithMockUser(value = "casuser")
     @Test
