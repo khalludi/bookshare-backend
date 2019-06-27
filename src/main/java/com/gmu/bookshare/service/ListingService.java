@@ -32,10 +32,12 @@ public class ListingService {
 
         user.addListing(listingEntity);
 
-        images.forEach(x -> {
-            ImageEntity image = new ImageEntity(x);
-            listingEntity.addImages(image);
-        });
+        if (images != null) {
+            images.forEach(x -> {
+                ImageEntity image = new ImageEntity(x);
+                listingEntity.addImages(image);
+            });
+        }
 
         return listingRepository.save(listingEntity);
     }
