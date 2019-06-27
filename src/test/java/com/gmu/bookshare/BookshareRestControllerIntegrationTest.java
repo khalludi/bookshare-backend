@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,8 +33,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(BookshareApiController.class)
@@ -148,5 +148,26 @@ public class BookshareRestControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(JsonUtil.writeValueAsString(listingDtoInDB)))
                 .andExpect(status().isOk());
+    }
+
+    @WithMockUser(value = "casuser")
+    @Test
+    public void givenFormData_whenAddListing_thenReturnHttpOk() throws Exception {
+
+        MockMultipartFile firstFile = new MockMultipartFile("images", "image1.jpg", "image/jpg", "some_image_data".getBytes());
+        MockMultipartFile secondFile = new MockMultipartFile("images", "image2.jpg", "image/jpg", "some_image_data2".getBytes());
+
+        String exampleJson = "{'items': ['volumeInfo': {'title': 'Physics'}]}";
+        when(restTemplate.getForEntity("https://www.googleapis.com/books/v1/volumes?q=9786543210&key=api_key", String.class))
+                .thenReturn(new ResponseEntity<>(exampleJson, HttpStatus.OK));
+
+        mvc.perform(multipart("/bs/api/listing")
+                .file(firstFile)
+                .file(secondFile)
+                .param("data", "{\"isbn\": \"9786543210\", \"course\": \"TEST 390\", \"condition\": 0, " +
+                        "\"accessCode\": 2, \"price\": 26, \"description\": \"Cool shades.\"}")
+                .with(csrf()))
+                .andExpect(status().is(201))
+                .andExpect(content().string("Successfully uploaded!"));
     }
 }

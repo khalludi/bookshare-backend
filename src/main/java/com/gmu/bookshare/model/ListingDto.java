@@ -2,6 +2,7 @@ package com.gmu.bookshare.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gmu.bookshare.entity.ListingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,4 +47,23 @@ public class ListingDto {
 
     @JsonProperty("title")
     private String title;
+
+    public ListingEntity toEntity() {
+        ListingEntity listingEntity = new ListingEntity();
+
+        listingEntity.setCourse(course);
+        listingEntity.setIsbn(isbn);
+        listingEntity.setCondition(condition);
+        listingEntity.setAccessCode(accessCode);
+        listingEntity.setPrice(price);
+        listingEntity.setDescription(description);
+        listingEntity.setCreateDate(new Date());
+        listingEntity.setTitle(title);
+
+        return listingEntity;
+    }
+
+    public boolean checkFields() {
+        return isbn >= 100000000 && !(price <= 0) && title != null;
+    }
 }

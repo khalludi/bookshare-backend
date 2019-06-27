@@ -1,8 +1,11 @@
 package com.gmu.bookshare.service;
 
 import com.gmu.bookshare.entity.BidEntity;
+import com.gmu.bookshare.entity.ImageEntity;
 import com.gmu.bookshare.entity.ListingEntity;
+import com.gmu.bookshare.entity.ShareUser;
 import com.gmu.bookshare.error.ListingNotFoundException;
+import com.gmu.bookshare.model.ListingDto;
 import com.gmu.bookshare.persistence.ListingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +26,18 @@ public class ListingService {
         return listingRepository.findAll();
     }
 
-    public ListingEntity addListing(ListingEntity newListingEntity) {
-        return listingRepository.save(newListingEntity);
+    public ListingEntity addListing(ListingDto listingDto, List<byte[]> images, ShareUser user) {
+
+        ListingEntity listingEntity = listingDto.toEntity();
+
+        user.addListing(listingEntity);
+
+        images.forEach(x -> {
+            ImageEntity image = new ImageEntity(x);
+            listingEntity.addImages(image);
+        });
+
+        return listingRepository.save(listingEntity);
     }
 
 

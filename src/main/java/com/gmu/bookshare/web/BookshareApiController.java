@@ -3,7 +3,6 @@ package com.gmu.bookshare.web;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmu.bookshare.entity.BidEntity;
-import com.gmu.bookshare.entity.ImageEntity;
 import com.gmu.bookshare.entity.ListingEntity;
 import com.gmu.bookshare.entity.ShareUser;
 import com.gmu.bookshare.model.BidDto;
@@ -82,12 +81,20 @@ public class BookshareApiController {
         DataWrapper dataWrapper = dataMapper.readValue(model.getData(), DataWrapper.class);
 
         // Convert DataWrapper to ListingDto
-        ListingDto listingDto = new ListingDto();
-        listingDto.setAccessCode(dataWrapper.getAccessCode());
-        listingDto.setCondition(dataWrapper.getCondition());
-        listingDto.setCourse(dataWrapper.getCourse());
-        listingDto.setDescription(dataWrapper.getDescription());
-        listingDto.setIsbn(Long.valueOf(dataWrapper.getIsbn()));
+        ListingDto listingDto = dataWrapper.toDto();
+        listingDto.setTitle(getTitleFromIsbn(listingDto.getIsbn()));
+
+        // Make sure necessary fields are provided
+        if (!listingDto.checkFields()) {
+            if (listingDto.getTitle() == null)
+                return new ResponseEntity<>("Title was not found from ISBN", HttpStatus.BAD_REQUEST);
+            else if (listingDto.getPrice() <= 0)
+                return new ResponseEntity<>("Price was zero or less", HttpStatus.BAD_REQUEST);
+            else if (listingDto.getIsbn() < 100000000)
+                return new ResponseEntity<>("Not a valid ISBN", HttpStatus.BAD_REQUEST);
+
+            return new ResponseEntity<>("Did not provide sufficient fields", HttpStatus.BAD_REQUEST);
+        }
 
         // Get array of images
         List<byte[]> images = new ArrayList<>();
@@ -107,18 +114,10 @@ public class BookshareApiController {
         }
 
         ShareUser user = shareUserService.getShareUser();
-        ListingEntity listingEntity = convertToEntity(listingDto);
 
-        user.addListing(listingEntity);
+        listingService.addListing(listingDto, images, user);
 
-        images.forEach(x -> {
-            ImageEntity image = new ImageEntity(x);
-            listingEntity.addImages(image);
-        });
-
-        listingService.addListing(listingEntity);
-
-        return new ResponseEntity<>("Successfully uploaded!", HttpStatus.OK);
+        return new ResponseEntity<>("Successfully uploaded!", HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/listing/{id}")

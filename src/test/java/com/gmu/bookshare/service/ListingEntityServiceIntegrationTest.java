@@ -101,6 +101,9 @@ public class ListingEntityServiceIntegrationTest {
 
     @Test
     public void whenAddListingByEntity_thenListingShouldBeReturned() {
+        ShareUser shareUser = new ShareUser("Bob Jones", "bobjones@gmail.com",
+                new HashSet<>(), new HashSet<>());
+
         ListingEntity listingEntity4 = new ListingEntity(new Date(), "Title Calc 3");
         listingEntity4.setIsbn(1234560);
         listingEntity4.setAccessCode(3);
@@ -109,6 +112,6 @@ public class ListingEntityServiceIntegrationTest {
         Mockito.when(EmployeeServiceImplTestContextConfiguration.listingRepository.save(listingEntity4))
                 .thenReturn(listingEntity4);
 
-        listingService.addListing(listingEntity4);
+        listingService.addListing(listingEntity4.toDto(), null, shareUser);
     }
 }

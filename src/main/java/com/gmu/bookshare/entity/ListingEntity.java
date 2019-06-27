@@ -1,5 +1,6 @@
 package com.gmu.bookshare.entity;
 
+import com.gmu.bookshare.model.ListingDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -98,5 +99,18 @@ public class ListingEntity {
     @Override
     public int hashCode() {
         return 71;
+    }
+
+    public ListingDto toDto() {
+        ListingDto listingDto = new ListingDto();
+        listingDto.setCourse(course);
+        listingDto.setIsbn(isbn);
+        listingDto.setCondition(condition);
+        listingDto.setAccessCode(accessCode);
+        listingDto.setPrice(price);
+        listingDto.setDescription(description);
+        listingDto.setTitle(title);
+
+        return listingDto;
     }
 }
