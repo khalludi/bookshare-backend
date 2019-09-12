@@ -9,5 +9,5 @@ public interface ListingRepository extends JpaRepository<ListingEntity, Long> {
 
     List<ListingEntity> findByTitle(String s);
 
-    List<ListingEntity> findByIsbn(int isbn);
+    List<ListingEntity> findByIsbn(long isbn);
 }

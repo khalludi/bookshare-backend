@@ -46,12 +46,18 @@ public class ListingEntityServiceIntegrationTest {
     public void setUp() {
         ShareUser shareUser = new ShareUser("Bob Jones", "bobjones@gmail.com",
                 new HashSet<>(), new HashSet<>());
-        ListingEntity listingEntity1 = new ListingEntity(1234567, 3, 14.99,
-                new Date(), "Title Calc 3");
-        ListingEntity listingEntity2 = new ListingEntity(1234568, 3, 14.99,
-                new Date(), "Title Calc 3");
-        ListingEntity listingEntity3 = new ListingEntity(1234569, 3, 14.99,
-                new Date(), "Title Calc 3");
+        ListingEntity listingEntity1 = new ListingEntity(new Date(), "Title Calc 3");
+        listingEntity1.setIsbn(1234567L);
+        listingEntity1.setAccessCode(3);
+        listingEntity1.setPrice(14.99);
+        ListingEntity listingEntity2 = new ListingEntity(new Date(), "Title Calc 3");
+        listingEntity2.setIsbn(1234568L);
+        listingEntity2.setAccessCode(3);
+        listingEntity2.setPrice(14.99);
+        ListingEntity listingEntity3 = new ListingEntity(new Date(), "Title Calc 3");
+        listingEntity3.setIsbn(1234569L);
+        listingEntity3.setAccessCode(3);
+        listingEntity3.setPrice(14.99);
 
         shareUser.addListing(listingEntity1);
         shareUser.addListing(listingEntity2);
@@ -95,12 +101,17 @@ public class ListingEntityServiceIntegrationTest {
 
     @Test
     public void whenAddListingByEntity_thenListingShouldBeReturned() {
-        ListingEntity listingEntity4 = new ListingEntity(1234560, 3, 14.99,
-                new Date(), "Title Calc 3");
+        ShareUser shareUser = new ShareUser("Bob Jones", "bobjones@gmail.com",
+                new HashSet<>(), new HashSet<>());
+
+        ListingEntity listingEntity4 = new ListingEntity(new Date(), "Title Calc 3");
+        listingEntity4.setIsbn(1234560);
+        listingEntity4.setAccessCode(3);
+        listingEntity4.setPrice(14.99);
 
         Mockito.when(EmployeeServiceImplTestContextConfiguration.listingRepository.save(listingEntity4))
                 .thenReturn(listingEntity4);
 
-        listingService.addListing(listingEntity4);
+        listingService.addListing(listingEntity4.toDto(), null, shareUser);
     }
 }

@@ -17,9 +17,9 @@ import org.springframework.security.cas.authentication.CasAuthenticationProvider
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 
 import javax.servlet.http.HttpSessionEvent;
@@ -37,8 +37,13 @@ public class BookshareApplication {
     }
 
     @Bean
-    FilterRegistrationBean forwardedHeaderFilter() {
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
+        FilterRegistrationBean<ForwardedHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new ForwardedHeaderFilter());
         filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return filterRegistrationBean;
@@ -54,12 +59,13 @@ public class BookshareApplication {
 
     @Bean
     @Primary
-    public AuthenticationEntryPoint authenticationEntryPoint(
+    public CasAuthenticationEntryPoint authenticationEntryPoint(
             ServiceProperties sP) {
 
         // URL where user will be redirected to for authentication
         CasAuthenticationEntryPoint entryPoint
                 = new CasAuthenticationEntryPoint();
+//        entryPoint.setLoginUrl("https://boiling-waters-26199.herokuapp.com/https://login.gmu.edu/login");
         entryPoint.setLoginUrl("https://login.gmu.edu/login");
         entryPoint.setServiceProperties(sP);
         return entryPoint;
@@ -106,7 +112,7 @@ public class BookshareApplication {
     @Bean
     public SingleSignOutFilter singleSignOutFilter() {
         SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
-        singleSignOutFilter.setCasServerUrlPrefix("https://login.gmu.edu");
+        singleSignOutFilter.setCasServerUrlPrefix("https://login.gmu.edu/");
         singleSignOutFilter.setIgnoreInitConfiguration(true);
         return singleSignOutFilter;
     }

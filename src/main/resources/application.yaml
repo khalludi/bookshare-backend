@@ -2,13 +2,24 @@ spring.jpa:
   hibernate:
     ddl-auto: none
     jdbc.lob.non_contextual_creation: true
-  properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  properties.hibernate:
+    dialect: org.hibernate.dialect.PostgreSQLDialect
   show-sql: true
 
 spring.datasource:
-  url: jdbc:postgresql://db:26257/testdb?sslmode=disable
+  url: jdbc:postgresql://localhost:26257/testdb?sslmode=disable
   username: user17
   password:
+
+secret:
+  apikey: ${API_KEY}
+
+#logging:
+#  level:
+#    ROOT: debug
+#    sql: debug
+#    web: debug
 
 server:
   ssl:
