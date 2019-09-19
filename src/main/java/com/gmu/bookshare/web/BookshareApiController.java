@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "https://localhost:8081", allowCredentials = "true", exposedHeaders = {"X-CSRF-HEADER", "X-CSRF-TOKEN"})
 @RestController
 @RequestMapping("/bs/api/")
 public class BookshareApiController {
@@ -191,9 +192,19 @@ public class BookshareApiController {
                 .collect(Collectors.toList());
     }
 
+    // AUTHENTICATION METHODS
+
+//    @RequestMapping(
+//            value = "/**",
+//            method = RequestMethod.OPTIONS
+//    )
+//    public ResponseEntity handle() {
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public void loginRedirect(HttpServletResponse httpServletResponse) {
-        String redirectURL = "https://localhost:9090";
+        String redirectURL = "https://localhost:8081";
         httpServletResponse.setHeader("Location", redirectURL);
         httpServletResponse.setStatus(302);
     }
